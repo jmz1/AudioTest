@@ -373,6 +373,7 @@
 				EC300B3617430D8700DF0365 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
