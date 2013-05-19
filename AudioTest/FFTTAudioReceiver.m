@@ -30,7 +30,7 @@
     return self;
 }
 
-static void receiverCallback(id                        receiver,
+static void receiverCallbackFunction(id                        receiver,
                              AEAudioController        *audioController,
                              void                     *source,
                              const AudioTimeStamp     *time,
@@ -61,7 +61,7 @@ static void receiverCallback(id                        receiver,
 }
 
 - (AEAudioControllerAudioCallback)receiverCallback {
-    return &receiverCallback;
+    return &receiverCallbackFunction;
 }
 
 @end

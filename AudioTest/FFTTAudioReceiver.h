@@ -11,8 +11,5 @@
 
 @interface FFTTAudioReceiver : NSObject <AEAudioReceiver>
 
-- (id)init;
-
-- (AEAudioControllerAudioCallback)receiverCallback;
 
 @end
