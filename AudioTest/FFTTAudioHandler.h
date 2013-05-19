@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "TheAmazingAudioEngine.h"
+#import <TheAmazingAudioEngine/TheAmazingAudioEngine.h>
 
 @interface FFTTAudioHandler : NSObject <AEAudioReceiver>
 
