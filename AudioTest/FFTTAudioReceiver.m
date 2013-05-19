@@ -7,8 +7,28 @@
 //
 
 #import "FFTTAudioReceiver.h"
+#include <libkern/OSAtomic.h>
+
+#define kRingBufferLength 8192
+
+@interface FFTTAudioReceiver () {
+    float       *_ringBuffer;
+    int          _ringBufferHead;
+}
+
+@end
 
 @implementation FFTTAudioReceiver
+
+
+- (id)init {
+    if ( !(self = [super init]) ) return nil;
+
+    self->_ringBuffer = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_ringBufferHead = 0;
+    
+    return self;
+}
 
 static void receiverCallback(id                        receiver,
                              AEAudioController        *audioController,
@@ -18,29 +38,26 @@ static void receiverCallback(id                        receiver,
                              AudioBufferList          *audio) {
 
     // Do your thing
+    FFTTAudioReceiver *THIS = (FFTTAudioReceiver*)receiver;
+
     
-//    FFTTAudioHandler *THIS = (FFTTAudioReceiver *)receiver;
-//    
-//    // convert incoming data to floating point
-//    AEFloatConverterToFloatBufferList(THIS->_floatConverter, audio, THIS->_conversionBuffer, frames);
-//    
-//    // Get a pointer to the audio buffer that we can advance
-//    float *audioPtr = THIS->_conversionBuffer->mBuffers[0].mData;
-//    
-//    // Copy in contiguous segments, wrapping around if necessary
-//    int remainingFrames = frames;
-//    while ( remainingFrames > 0 ) {
-//        int framesToCopy = MIN(remainingFrames, kRingBufferLength - THIS->_ringBufferHead);
-//        
-//        memcpy(THIS->_ringBuffer + THIS->_ringBufferHead, audioPtr, framesToCopy * sizeof(float));
-//        audioPtr += framesToCopy;
-//        
-//        int buffer_head = THIS->_ringBufferHead + framesToCopy;
-//        if ( buffer_head == kRingBufferLength ) buffer_head = 0;
-//        OSMemoryBarrier();
-//        THIS->_ringBufferHead = buffer_head;
-//        remainingFrames -= framesToCopy;
-//    }
+    // Get a pointer to the audio buffer that we can advance
+    float *audioPtr = audio->mBuffers[0].mData;
+    
+    // Copy in contiguous segments, wrapping around if necessary
+    int remainingFrames = frames;
+    while ( remainingFrames > 0 ) {
+        int framesToCopy = MIN(remainingFrames, kRingBufferLength - THIS->_ringBufferHead);
+        
+        memcpy(THIS->_ringBuffer + THIS->_ringBufferHead, audioPtr, framesToCopy * sizeof(float));
+        audioPtr += framesToCopy;
+        
+        int buffer_head = THIS->_ringBufferHead + (framesToCopy * sizeof(float));
+        if ( buffer_head == (kRingBufferLength * sizeof(float)) ) buffer_head = 0;
+        OSMemoryBarrier();
+        THIS->_ringBufferHead = buffer_head;
+        remainingFrames -= framesToCopy;
+    }
 }
 
 - (AEAudioControllerAudioCallback)receiverCallback {

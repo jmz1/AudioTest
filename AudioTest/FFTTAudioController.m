@@ -29,6 +29,10 @@
         // set up the channels (haven't finished doing this)
 //        [self.audioController addInputReceiver:self.audioReceiver];
 //        [self.audioController addOutputReceiver:self.audioReceiver];
+        
+        [self.audioController addInputReceiver:(id< AEAudioReceiver >) self.audioReceiver
+                               forChannels:[NSArray arrayWithObject:[NSNumber numberWithInt:0]]];
+
     }
     return self;
 }

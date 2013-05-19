@@ -90,7 +90,7 @@ static const int kInputChannelsChangedContext;
     //[_audioController addInputReceiver:(id< AEAudioReceiver >) self];
 
     [_audioController addInputReceiver:(id< AEAudioReceiver >) self
-        forChannels:[NSArray arrayWithObject:[NSNumber numberWithInt:1]]];
+        forChannels:[NSArray arrayWithObject:[NSNumber numberWithInt:0]]];
         
     return self;
 }
