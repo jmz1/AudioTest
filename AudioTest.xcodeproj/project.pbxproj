@@ -24,20 +24,20 @@
 		EC300B4917430F1A00DF0365 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC300B4717430F1A00DF0365 /* AudioToolbox.framework */; };
 		EC300B5B17436D9B00DF0365 /* FFTTAudioHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = EC300B5A17436D9B00DF0365 /* FFTTAudioHandler.m */; };
 		EC300B5D1743AA8B00DF0365 /* Samples in Resources */ = {isa = PBXBuildFile; fileRef = EC300B5C1743AA8B00DF0365 /* Samples */; };
-		EC300B6F17486EB400DF0365 /* libTheAmazingAudioEngine.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC300B6C17486E8A00DF0365 /* libTheAmazingAudioEngine.a */; };
+		EC300B83174993A600DF0365 /* libTheAmazingAudioEngine.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC300B801749939800DF0365 /* libTheAmazingAudioEngine.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		EC300B6B17486E8A00DF0365 /* PBXContainerItemProxy */ = {
+		EC300B7F1749939800DF0365 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = EC300B6717486E8A00DF0365 /* TheAmazingAudioEngine.xcodeproj */;
+			containerPortal = EC300B7B1749939800DF0365 /* TheAmazingAudioEngine.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 4C215CEC1523A7D500D36CAD;
 			remoteInfo = TheAmazingAudioEngine;
 		};
-		EC300B6D17486EAE00DF0365 /* PBXContainerItemProxy */ = {
+		EC300B81174993A000DF0365 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = EC300B6717486E8A00DF0365 /* TheAmazingAudioEngine.xcodeproj */;
+			containerPortal = EC300B7B1749939800DF0365 /* TheAmazingAudioEngine.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 4C215CEB1523A7D500D36CAD;
 			remoteInfo = TheAmazingAudioEngine;
@@ -70,7 +70,7 @@
 		EC300B5917436D9A00DF0365 /* FFTTAudioHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTTAudioHandler.h; sourceTree = "<group>"; };
 		EC300B5A17436D9B00DF0365 /* FFTTAudioHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTTAudioHandler.m; sourceTree = "<group>"; };
 		EC300B5C1743AA8B00DF0365 /* Samples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Samples; sourceTree = "<group>"; };
-		EC300B6717486E8A00DF0365 /* TheAmazingAudioEngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TheAmazingAudioEngine.xcodeproj; path = Submodules/TheAmazingAudioEngine/TheAmazingAudioEngine.xcodeproj; sourceTree = "<group>"; };
+		EC300B7B1749939800DF0365 /* TheAmazingAudioEngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TheAmazingAudioEngine.xcodeproj; path = Submodules/TheAmazingAudioEngine/TheAmazingAudioEngine.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,7 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC300B6F17486EB400DF0365 /* libTheAmazingAudioEngine.a in Frameworks */,
+				EC300B83174993A600DF0365 /* libTheAmazingAudioEngine.a in Frameworks */,
 				EC300B4817430F1A00DF0365 /* Accelerate.framework in Frameworks */,
 				EC300B4917430F1A00DF0365 /* AudioToolbox.framework in Frameworks */,
 				EC300B1517430D8700DF0365 /* UIKit.framework in Frameworks */,
@@ -93,10 +93,10 @@
 		EC300B0817430D8700DF0365 = {
 			isa = PBXGroup;
 			children = (
+				EC300B7B1749939800DF0365 /* TheAmazingAudioEngine.xcodeproj */,
 				EC300B1A17430D8700DF0365 /* AudioTest */,
 				EC300B1317430D8700DF0365 /* Frameworks */,
 				EC300B1217430D8700DF0365 /* Products */,
-				EC300B6717486E8A00DF0365 /* TheAmazingAudioEngine.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -154,10 +154,10 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		EC300B6817486E8A00DF0365 /* Products */ = {
+		EC300B7C1749939800DF0365 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EC300B6C17486E8A00DF0365 /* libTheAmazingAudioEngine.a */,
+				EC300B801749939800DF0365 /* libTheAmazingAudioEngine.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -176,7 +176,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				EC300B6E17486EAE00DF0365 /* PBXTargetDependency */,
+				EC300B82174993A000DF0365 /* PBXTargetDependency */,
 			);
 			name = AudioTest;
 			productName = AudioTest;
@@ -205,8 +205,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = EC300B6817486E8A00DF0365 /* Products */;
-					ProjectRef = EC300B6717486E8A00DF0365 /* TheAmazingAudioEngine.xcodeproj */;
+					ProductGroup = EC300B7C1749939800DF0365 /* Products */;
+					ProjectRef = EC300B7B1749939800DF0365 /* TheAmazingAudioEngine.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -217,11 +217,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		EC300B6C17486E8A00DF0365 /* libTheAmazingAudioEngine.a */ = {
+		EC300B801749939800DF0365 /* libTheAmazingAudioEngine.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libTheAmazingAudioEngine.a;
-			remoteRef = EC300B6B17486E8A00DF0365 /* PBXContainerItemProxy */;
+			remoteRef = EC300B7F1749939800DF0365 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -259,10 +259,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		EC300B6E17486EAE00DF0365 /* PBXTargetDependency */ = {
+		EC300B82174993A000DF0365 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = TheAmazingAudioEngine;
-			targetProxy = EC300B6D17486EAE00DF0365 /* PBXContainerItemProxy */;
+			targetProxy = EC300B81174993A000DF0365 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -349,6 +349,10 @@
 				GCC_PREFIX_HEADER = "AudioTest/AudioTest-Prefix.pch";
 				HEADER_SEARCH_PATHS = "Submodules/**";
 				INFOPLIST_FILE = "AudioTest/AudioTest-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/AudioTest-dtudagtvplckffgozcwgfznvaowo/Build/Products/Debug-iphoneos\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -361,6 +365,10 @@
 				GCC_PREFIX_HEADER = "AudioTest/AudioTest-Prefix.pch";
 				HEADER_SEARCH_PATHS = "Submodules/**";
 				INFOPLIST_FILE = "AudioTest/AudioTest-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/AudioTest-dtudagtvplckffgozcwgfznvaowo/Build/Products/Debug-iphoneos\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

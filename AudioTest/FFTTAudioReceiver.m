@@ -47,7 +47,7 @@ static void receiverCallbackFunction(id                        receiver,
     // Copy in contiguous segments, wrapping around if necessary
     int remainingFrames = frames;
     while ( remainingFrames > 0 ) {
-        int framesToCopy = MIN(remainingFrames, kRingBufferLength - THIS->_ringBufferHead);
+        int framesToCopy = MIN(remainingFrames, kRingBufferLength - (THIS->_ringBufferHead / sizeof(float)));
         
         memcpy(THIS->_ringBuffer + THIS->_ringBufferHead, audioPtr, framesToCopy * sizeof(float));
         audioPtr += framesToCopy;
