@@ -1,0 +1,4 @@
+
+[submodule "Submodules/TheAmazingAudioEngine"]
+	path = Submodules/TheAmazingAudioEngine
+	url = git://github.com/TheAmazingAudioEngine/TheAmazingAudioEngine.git
