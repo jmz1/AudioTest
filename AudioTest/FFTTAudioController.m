@@ -24,7 +24,7 @@
         self.audioFilePlayer.volume = 1.0;
         
         // set up the receiver
-        self.audioReceiver = [[FFTTAudioReceiver alloc] init];
+        _audioReceiver = [[FFTTAudioReceiver alloc] init];
         
         // set up the channels (haven't finished doing this)
 //        [self.audioController addInputReceiver:self.audioReceiver];
