@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		65DF892F174877BD0063A508 /* FFTTAudioController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DF892E174877BD0063A508 /* FFTTAudioController.m */; };
+		65DF89351748792C0063A508 /* FFTTAudioReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DF89341748792C0063A508 /* FFTTAudioReceiver.m */; };
 		EC300B1517430D8700DF0365 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC300B1417430D8700DF0365 /* UIKit.framework */; };
 		EC300B1717430D8700DF0365 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC300B1617430D8700DF0365 /* Foundation.framework */; };
 		EC300B1917430D8700DF0365 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC300B1817430D8700DF0365 /* CoreGraphics.framework */; };
@@ -43,6 +45,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		65DF892D174877BD0063A508 /* FFTTAudioController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTTAudioController.h; sourceTree = "<group>"; };
+		65DF892E174877BD0063A508 /* FFTTAudioController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTTAudioController.m; sourceTree = "<group>"; };
+		65DF89331748792C0063A508 /* FFTTAudioReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTTAudioReceiver.h; sourceTree = "<group>"; };
+		65DF89341748792C0063A508 /* FFTTAudioReceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTTAudioReceiver.m; sourceTree = "<group>"; };
 		EC300B1117430D8700DF0365 /* AudioTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AudioTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC300B1417430D8700DF0365 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		EC300B1617430D8700DF0365 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -87,12 +93,10 @@
 		EC300B0817430D8700DF0365 = {
 			isa = PBXGroup;
 			children = (
-				EC300B6717486E8A00DF0365 /* TheAmazingAudioEngine.xcodeproj */,
-				EC300B4617430F1A00DF0365 /* Accelerate.framework */,
-				EC300B4717430F1A00DF0365 /* AudioToolbox.framework */,
 				EC300B1A17430D8700DF0365 /* AudioTest */,
 				EC300B1317430D8700DF0365 /* Frameworks */,
 				EC300B1217430D8700DF0365 /* Products */,
+				EC300B6717486E8A00DF0365 /* TheAmazingAudioEngine.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -107,6 +111,8 @@
 		EC300B1317430D8700DF0365 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EC300B4617430F1A00DF0365 /* Accelerate.framework */,
+				EC300B4717430F1A00DF0365 /* AudioToolbox.framework */,
 				EC300B1417430D8700DF0365 /* UIKit.framework */,
 				EC300B1617430D8700DF0365 /* Foundation.framework */,
 				EC300B1817430D8700DF0365 /* CoreGraphics.framework */,
@@ -121,6 +127,10 @@
 				EC300B2417430D8700DF0365 /* FFTTAppDelegate.m */,
 				EC300B2C17430D8700DF0365 /* FFTTViewController.h */,
 				EC300B2D17430D8700DF0365 /* FFTTViewController.m */,
+				65DF892D174877BD0063A508 /* FFTTAudioController.h */,
+				65DF892E174877BD0063A508 /* FFTTAudioController.m */,
+				65DF89331748792C0063A508 /* FFTTAudioReceiver.h */,
+				65DF89341748792C0063A508 /* FFTTAudioReceiver.m */,
 				EC300B5917436D9A00DF0365 /* FFTTAudioHandler.h */,
 				EC300B5A17436D9B00DF0365 /* FFTTAudioHandler.m */,
 				EC300B2F17430D8700DF0365 /* FFTTViewController.xib */,
@@ -241,6 +251,8 @@
 				EC300B2517430D8700DF0365 /* FFTTAppDelegate.m in Sources */,
 				EC300B2E17430D8700DF0365 /* FFTTViewController.m in Sources */,
 				EC300B5B17436D9B00DF0365 /* FFTTAudioHandler.m in Sources */,
+				65DF892F174877BD0063A508 /* FFTTAudioController.m in Sources */,
+				65DF89351748792C0063A508 /* FFTTAudioReceiver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

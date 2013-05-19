@@ -9,17 +9,7 @@
 #import "FFTTAppDelegate.h"
 
 #import "FFTTViewController.h"
-#import "FFTTAudioHandler.h"
-
-@interface FFTTAppDelegate () {
-
-}
-
-@property (strong, nonatomic) FFTTAudioHandler *audioHandler;
-
-@end
-
-
+#import "FFTTAudioController.h"
 
 @implementation FFTTAppDelegate
 
@@ -27,15 +17,14 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    // do other initialisations
-    self.audioHandler = [[FFTTAudioHandler alloc] init];
-    
-    // Override point for customization after application launch.
-    
-    // Create and display view controller
     self.viewController = [[FFTTViewController alloc] initWithNibName:@"FFTTViewController" bundle:nil];
+    self.audioController = [[FFTTAudioController alloc] init];
+    
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
+    
+    [self.audioController start];
+    
     return YES;
 }
 

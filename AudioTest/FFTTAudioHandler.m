@@ -128,7 +128,7 @@ static void receiverCallback(id                        receiver,
 
 // should the return value be referenced with & ?
 -(AEAudioControllerAudioCallback)receiverCallback {
-    return receiverCallback;
+    return &receiverCallback;
 }
 
 @end
