@@ -34,7 +34,8 @@
 //}
 - (IBAction)switchChanged:(UISwitch *)sender {
     NSLog(@"Hello");
-    self.countLabel.text = [NSString stringWithFormat:@"%d",5];
+//    NSLog(@"%@", self.countLabel.text);
+    self.countLabel.text = [NSString stringWithFormat:@"%d", 5];
 
 }
 @end

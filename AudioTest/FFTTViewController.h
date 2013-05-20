@@ -10,9 +10,9 @@
 
 @interface FFTTViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UISwitch *switchOutlet;
-@property (weak, nonatomic) IBOutlet UILabel *countLabel;
-@property (weak, nonatomic) IBOutlet UILabel *valueLabel;
+@property (nonatomic, retain) IBOutlet UISwitch *switchOutlet;
+@property (nonatomic, retain) IBOutlet UILabel *countLabel;
+@property (nonatomic, retain) IBOutlet UILabel *valueLabel;
 
 - (IBAction)switchChanged:(UISwitch *)sender;
 
