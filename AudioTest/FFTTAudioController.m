@@ -16,7 +16,7 @@
     if (self) {
         // Set up the audio controller
         self.audioController = [[AEAudioController alloc] initWithAudioDescription:[AEAudioController nonInterleavedFloatStereoAudioDescription] inputEnabled:YES];
-        self.audioController.preferredBufferDuration = 1024.0 / 44100.0;
+        self.audioController.preferredBufferDuration = 512.0 / 44100.0 + 0.0001;
         
         // set up the sample player
         self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A4d" withExtension:@"aiff"] audioController:self.audioController error:nil];
