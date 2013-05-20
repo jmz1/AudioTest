@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface FFTTViewController : UIViewController
+
+@property (weak, nonatomic) IBOutlet UISwitch *switchOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *countLabel;
 @property (weak, nonatomic) IBOutlet UILabel *valueLabel;
-//- (IBAction)getButtonPressed:(UIButton *)sender;
+
 - (IBAction)switchChanged:(UISwitch *)sender;
 
 @end
