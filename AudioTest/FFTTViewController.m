@@ -28,4 +28,13 @@
     // Dispose of any resources that can be recreated.
 }
 
+//- (IBAction)getButtonPressed:(UIButton *)sender {
+//    NSLog(@"Hello");
+//    self.countLabel.text = [NSString stringWithFormat:@"%d",5];
+//}
+- (IBAction)switchChanged:(UISwitch *)sender {
+    NSLog(@"Hello");
+    self.countLabel.text = [NSString stringWithFormat:@"%d",5];
+
+}
 @end

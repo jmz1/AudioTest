@@ -11,5 +11,9 @@
 
 @interface FFTTAudioReceiver : NSObject <AEAudioReceiver>
 
+- (int) getTestCount;
+
+- (float) getTestValue;
+
 
 @end

@@ -14,6 +14,8 @@
 @interface FFTTAudioReceiver () {
     float       *_ringBuffer;
     int          _ringBufferHead;
+    int          _testCount;
+    float        _testSample;
 }
 
 @end
@@ -58,10 +60,22 @@ static void receiverCallbackFunction(id                        receiver,
         THIS->_ringBufferHead = buffer_head;
         remainingFrames -= framesToCopy;
     }
+    
+    THIS->_testCount++;
+    THIS->_testSample = THIS->_ringBuffer[0];
 }
 
 - (AEAudioControllerAudioCallback)receiverCallback {
     return &receiverCallbackFunction;
 }
+
+- (int) getTestCount {
+    return _testCount;
+}
+
+- (float) getTestValue {
+    return _testSample;
+}
+
 
 @end

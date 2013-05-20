@@ -20,4 +20,7 @@
 - (void)start;
 - (void)stop;
 
+- (int)getARTestCount;
+- (float)getARTestValue;
+
 @end

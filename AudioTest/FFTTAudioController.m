@@ -50,4 +50,15 @@
     [_audioController stop];
 }
 
+- (int)getARTestCount
+{
+    return [self.audioReceiver getTestCount];
+}
+
+- (float)getARTestValue
+{
+    return [self.audioReceiver getTestValue];
+}
+
+
 @end
