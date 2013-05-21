@@ -7,7 +7,6 @@
 //
 
 #import "FFTTViewController.h"
-#import "FFTTAudioHandler.h"
 
 
 @interface FFTTViewController ()

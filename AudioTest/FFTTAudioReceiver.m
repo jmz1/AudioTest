@@ -9,13 +9,15 @@
 #import "FFTTAudioReceiver.h"
 #include <libkern/OSAtomic.h>
 
-#define kRingBufferLength 8192
+#import "AnalysisDefines.h"
 
 @interface FFTTAudioReceiver () {
     float       *_ringBuffer;
     int          _ringBufferHead;
     int          _testCount;
     float        _testSample;
+    dispatch_queue_t _analysisQueue;
+    FFTTAudioController *_parentAudioController;
 }
 
 @end
@@ -23,11 +25,14 @@
 @implementation FFTTAudioReceiver
 
 
-- (id)init {
+- (id)initWithParentController:(FFTTAudioController *)parentAudioController {
     if ( !(self = [super init]) ) return nil;
 
     self->_ringBuffer = (float*)calloc(kRingBufferLength, sizeof(float));
     self->_ringBufferHead = 0;
+    
+    self->_analysisQueue = dispatch_queue_create("Analysis Queue",NULL);
+    self->_parentAudioController = parentAudioController;
     
     return self;
 }
@@ -55,7 +60,7 @@ static void receiverCallbackFunction(id                        receiver,
         audioPtr += framesToCopy;
         
         int buffer_head = THIS->_ringBufferHead + (framesToCopy * sizeof(float));
-        if ( buffer_head == (kRingBufferLength * sizeof(float)) ) buffer_head = 0;
+        if ( buffer_head == kRingBufferLengthBytes ) buffer_head = 0;
         OSMemoryBarrier();
         THIS->_ringBufferHead = buffer_head;
         remainingFrames -= framesToCopy;
@@ -63,6 +68,13 @@ static void receiverCallbackFunction(id                        receiver,
     
     THIS->_testCount++;
     THIS->_testSample = THIS->_ringBuffer[0];
+    
+    // enqueue analysis
+    // create block with: [THIS->_audioController triggerAnalysis];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [THIS->_parentAudioController triggerAnalysis];
+    });
+    
 }
 
 - (AEAudioControllerAudioCallback)receiverCallback {
@@ -75,6 +87,11 @@ static void receiverCallbackFunction(id                        receiver,
 
 - (float) getTestValue {
     return _testSample;
+}
+
+- (void) copyBufferData:(float *)destination bufferHeadPosition:(int *)bufferHead {
+    *bufferHead = _ringBufferHead;
+    memcpy(destination, _ringBuffer, kRingBufferLengthBytes);
 }
 
 

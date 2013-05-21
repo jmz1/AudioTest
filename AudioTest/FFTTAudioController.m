@@ -8,6 +8,8 @@
 
 #import "FFTTAudioController.h"
 
+#import "AnalysisDefines.h"
+
 @implementation FFTTAudioController
 
 - (id)init
@@ -16,7 +18,7 @@
     if (self) {
         // Set up the audio controller
         self.audioController = [[AEAudioController alloc] initWithAudioDescription:[AEAudioController nonInterleavedFloatStereoAudioDescription] inputEnabled:YES];
-        self.audioController.preferredBufferDuration = 512.0 / 44100.0 + 0.0001;
+        self.audioController.preferredBufferDuration = kSamplesPerWindowFloat / 44100.0 + 0.00001;
         
         // set up the sample player
         self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A4d" withExtension:@"aiff"] audioController:self.audioController error:nil];
@@ -24,7 +26,10 @@
         self.audioFilePlayer.volume = 1.0;
         
         // set up the receiver
-        _audioReceiver = [[FFTTAudioReceiver alloc] init];
+        self.audioReceiver = [[FFTTAudioReceiver alloc] initWithParentController:self];
+        
+        // set up analysis engine
+        self.analysisEngine = [[FFTTAnalysisEngine alloc] initWithAudioReceiver:self.audioReceiver];
         
         // set up the channels (haven't finished doing this)
 //        [self.audioController addInputReceiver:self.audioReceiver];
@@ -58,6 +63,10 @@
 - (float)getARTestValue
 {
     return [self.audioReceiver getTestValue];
+}
+
+- (void) triggerAnalysis{
+    [self.analysisEngine runAnalysis];
 }
 
 

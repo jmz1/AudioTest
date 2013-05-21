@@ -8,12 +8,19 @@
 
 #import <Foundation/Foundation.h>
 #import <TheAmazingAudioEngine/TheAmazingAudioEngine.h>
+#import "FFTTAudioController.h"
+
+@class FFTTAudioController;
 
 @interface FFTTAudioReceiver : NSObject <AEAudioReceiver>
+
+- (id)initWithParentController:(FFTTAudioController *) parentAudioController;
 
 - (int) getTestCount;
 
 - (float) getTestValue;
 
+
+- (void) copyBufferData:(float *)destination bufferHeadPosition:(int *)bufferHead;
 
 @end
