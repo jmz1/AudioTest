@@ -2,7 +2,7 @@
 //  FFTTAudioReceiver.m
 //  AudioTest
 //
-//  Created by Daniel Clelland on 19/05/13.
+//  Created by James Ormrod on 19/05/13.
 //  Copyright (c) 2013 James Ormrod. All rights reserved.
 //
 
@@ -90,8 +90,8 @@ static void receiverCallbackFunction(id                        receiver,
 }
 
 - (void) copyBufferData:(float *)destination bufferHeadPosition:(int *)bufferHead {
-    *bufferHead = _ringBufferHead;
-    memcpy(destination, _ringBuffer, kRingBufferLengthBytes);
+    *bufferHead = self->_ringBufferHead;
+    memcpy(destination, self->_ringBuffer, kRingBufferLengthBytes);
 }
 
 

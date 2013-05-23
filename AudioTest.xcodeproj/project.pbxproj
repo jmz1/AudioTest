@@ -22,9 +22,9 @@
 		EC300B3117430D8700DF0365 /* FFTTViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EC300B2F17430D8700DF0365 /* FFTTViewController.xib */; };
 		EC300B4817430F1A00DF0365 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC300B4617430F1A00DF0365 /* Accelerate.framework */; };
 		EC300B4917430F1A00DF0365 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC300B4717430F1A00DF0365 /* AudioToolbox.framework */; };
-		EC300B5B17436D9B00DF0365 /* FFTTAudioHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = EC300B5A17436D9B00DF0365 /* FFTTAudioHandler.m */; };
 		EC300B5D1743AA8B00DF0365 /* Samples in Resources */ = {isa = PBXBuildFile; fileRef = EC300B5C1743AA8B00DF0365 /* Samples */; };
 		EC300B83174993A600DF0365 /* libTheAmazingAudioEngine.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC300B801749939800DF0365 /* libTheAmazingAudioEngine.a */; };
+		EC785EDB1749F22100CA3876 /* FFTTAnalysisEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = EC785EDA1749F22100CA3876 /* FFTTAnalysisEngine.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,10 +67,11 @@
 		EC300B3017430D8700DF0365 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FFTTViewController.xib; sourceTree = "<group>"; };
 		EC300B4617430F1A00DF0365 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		EC300B4717430F1A00DF0365 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		EC300B5917436D9A00DF0365 /* FFTTAudioHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTTAudioHandler.h; sourceTree = "<group>"; };
-		EC300B5A17436D9B00DF0365 /* FFTTAudioHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTTAudioHandler.m; sourceTree = "<group>"; };
 		EC300B5C1743AA8B00DF0365 /* Samples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Samples; sourceTree = "<group>"; };
 		EC300B7B1749939800DF0365 /* TheAmazingAudioEngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TheAmazingAudioEngine.xcodeproj; path = Submodules/TheAmazingAudioEngine/TheAmazingAudioEngine.xcodeproj; sourceTree = "<group>"; };
+		EC785ED91749F22100CA3876 /* FFTTAnalysisEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTTAnalysisEngine.h; sourceTree = "<group>"; };
+		EC785EDA1749F22100CA3876 /* FFTTAnalysisEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTTAnalysisEngine.m; sourceTree = "<group>"; };
+		EC785EDC1749F55900CA3876 /* AnalysisDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnalysisDefines.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +124,9 @@
 		EC300B1A17430D8700DF0365 /* AudioTest */ = {
 			isa = PBXGroup;
 			children = (
+				EC785EDC1749F55900CA3876 /* AnalysisDefines.h */,
+				EC785ED91749F22100CA3876 /* FFTTAnalysisEngine.h */,
+				EC785EDA1749F22100CA3876 /* FFTTAnalysisEngine.m */,
 				EC300B2317430D8700DF0365 /* FFTTAppDelegate.h */,
 				EC300B2417430D8700DF0365 /* FFTTAppDelegate.m */,
 				EC300B2C17430D8700DF0365 /* FFTTViewController.h */,
@@ -131,8 +135,6 @@
 				65DF892E174877BD0063A508 /* FFTTAudioController.m */,
 				65DF89331748792C0063A508 /* FFTTAudioReceiver.h */,
 				65DF89341748792C0063A508 /* FFTTAudioReceiver.m */,
-				EC300B5917436D9A00DF0365 /* FFTTAudioHandler.h */,
-				EC300B5A17436D9B00DF0365 /* FFTTAudioHandler.m */,
 				EC300B2F17430D8700DF0365 /* FFTTViewController.xib */,
 				EC300B1B17430D8700DF0365 /* Supporting Files */,
 			);
@@ -248,11 +250,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC300B2117430D8700DF0365 /* main.m in Sources */,
+				65DF892F174877BD0063A508 /* FFTTAudioController.m in Sources */,
 				EC300B2517430D8700DF0365 /* FFTTAppDelegate.m in Sources */,
 				EC300B2E17430D8700DF0365 /* FFTTViewController.m in Sources */,
-				EC300B5B17436D9B00DF0365 /* FFTTAudioHandler.m in Sources */,
-				65DF892F174877BD0063A508 /* FFTTAudioController.m in Sources */,
 				65DF89351748792C0063A508 /* FFTTAudioReceiver.m in Sources */,
+				EC785EDB1749F22100CA3876 /* FFTTAnalysisEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

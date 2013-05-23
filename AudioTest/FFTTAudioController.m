@@ -2,7 +2,7 @@
 //  FFTTAudioController.m
 //  AudioTest
 //
-//  Created by Daniel Clelland on 19/05/13.
+//  Created by James Ormrod on 19/05/13.
 //  Copyright (c) 2013 James Ormrod. All rights reserved.
 //
 

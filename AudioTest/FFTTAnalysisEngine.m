@@ -45,8 +45,9 @@
     [self.audioReceiver copyBufferData:_inputBuffer bufferHeadPosition:(&_inputBufferHead)];
     // reorder buffer oldest->newest
     int numBytesUntilEnd = kRingBufferLengthBytes - _inputBufferHead;
-    memcpy(_orderedBuffer, _inputBuffer + _inputBufferHead, numBytesUntilEnd);
-    memcpy(_orderedBuffer + numBytesUntilEnd, _inputBuffer, _inputBufferHead);
+    memcpy(self->_orderedBuffer, self->_inputBuffer + _inputBufferHead, numBytesUntilEnd);
+    memcpy(self->_orderedBuffer + numBytesUntilEnd, self->_inputBuffer, _inputBufferHead);
+//    memcpy(self->_orderedBuffer, _inputBuffer, kRingBufferLengthBytes);
 
 }
 
