@@ -10,6 +10,7 @@
 #define AudioTest_AnalysisDefines_h
 
 #define kRingBufferLength 8192
+//#define kRingBufferLength 1024
 #define kRingBufferLengthBytes (kRingBufferLength * sizeof(float))
 
 #define kSamplesPerWindow 512

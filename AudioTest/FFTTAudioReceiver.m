@@ -54,13 +54,13 @@ static void receiverCallbackFunction(id                        receiver,
     // Copy in contiguous segments, wrapping around if necessary
     int remainingFrames = frames;
     while ( remainingFrames > 0 ) {
-        int framesToCopy = MIN(remainingFrames, kRingBufferLength - (THIS->_ringBufferHead / sizeof(float)));
-        
+        int framesToCopy = MIN(remainingFrames, kRingBufferLength - (THIS->_ringBufferHead));
+        NSLog(@"%p",THIS->_ringBuffer + THIS->_ringBufferHead);
         memcpy(THIS->_ringBuffer + THIS->_ringBufferHead, audioPtr, framesToCopy * sizeof(float));
         audioPtr += framesToCopy;
         
-        int buffer_head = THIS->_ringBufferHead + (framesToCopy * sizeof(float));
-        if ( buffer_head == kRingBufferLengthBytes ) buffer_head = 0;
+        int buffer_head = THIS->_ringBufferHead + framesToCopy;
+        if ( buffer_head == kRingBufferLength ) buffer_head = 0;
         OSMemoryBarrier();
         THIS->_ringBufferHead = buffer_head;
         remainingFrames -= framesToCopy;
