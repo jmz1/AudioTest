@@ -16,4 +16,7 @@
 #define kSamplesPerWindow 512
 #define kSamplesPerWindowFloat 512.0
 
+#define kLog2of16K 14
+#define kLog2of8K  13
+
 #endif
