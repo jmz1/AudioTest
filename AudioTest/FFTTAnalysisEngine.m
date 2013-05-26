@@ -23,12 +23,16 @@
     // computation arrays
     float                   *_windowedData;
     DSPSplitComplex          _windowedDataComplex;
-
+    DSPSplitComplex          _freqDataComplex;
+    float                   *_freqDataMag;
     
     // struct for precomputed FFT factors
     FFTSetup     _FFTSetup;
     // stored Blackmann window
     float         *_blackmanWindow;
+    
+    // test arrays
+    int           *_fftRealInt;
 }
 
 @end
@@ -49,8 +53,14 @@
     self->_windowedData = (float*)calloc(kRingBufferLength, sizeof(float));
     self->_windowedDataComplex.realp = (float*)calloc(kRingBufferLength, sizeof(float));
     self->_windowedDataComplex.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_freqDataComplex.realp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_freqDataComplex.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_freqDataMag = (float*)calloc(kRingBufferLength, sizeof(float));
     
     self->_blackmanWindow = (float*)calloc(kRingBufferLength, sizeof(float));
+    
+    
+    self->_fftRealInt = (int*)calloc(kRingBufferLength, sizeof(int));
     
     // do FFT initialisations
     _FFTSetup = vDSP_create_fftsetup( kLog2of16K, kFFTRadix2 );
@@ -81,7 +91,12 @@
     // copy windowed data to real part of FFT buffer
     memcpy(self->_windowedDataComplex.realp, self->_windowedData, kRingBufferLengthBytes);
     
+    // perform FFT
+    vDSP_fft_zop (_FFTSetup,&(_windowedDataComplex),1,&(_freqDataComplex),1,kLog2of8K,kFFTDirection_Forward);
     
+    vDSP_zvmags(&(self->_freqDataComplex),1,_freqDataMag,1,kRingBufferLength);
+    
+    vDSP_vfixr32 (_freqDataMag,1,_fftRealInt,1,kRingBufferLength);
 }
 
 @end
