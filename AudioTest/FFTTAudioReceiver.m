@@ -55,7 +55,6 @@ static void receiverCallbackFunction(id                        receiver,
     int remainingFrames = frames;
     while ( remainingFrames > 0 ) {
         int framesToCopy = MIN(remainingFrames, kRingBufferLength - (THIS->_ringBufferHead));
-        NSLog(@"%p",THIS->_ringBuffer + THIS->_ringBufferHead);
         memcpy(THIS->_ringBuffer + THIS->_ringBufferHead, audioPtr, framesToCopy * sizeof(float));
         audioPtr += framesToCopy;
         
@@ -90,6 +89,7 @@ static void receiverCallbackFunction(id                        receiver,
 }
 
 - (void) copyBufferData:(float *)destination bufferHeadPosition:(int *)bufferHead {
+    NSLog(@"%d",self->_ringBufferHead);
     *bufferHead = self->_ringBufferHead;
     memcpy(destination, self->_ringBuffer, kRingBufferLengthBytes);
 }
