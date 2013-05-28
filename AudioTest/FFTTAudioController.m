@@ -20,6 +20,8 @@
         self.audioController = [[AEAudioController alloc] initWithAudioDescription:[AEAudioController nonInterleavedFloatStereoAudioDescription] inputEnabled:YES];
         self.audioController.preferredBufferDuration = kSamplesPerWindowFloat / 44100.0 + 0.00001;
         
+        [self.audioController stop];
+        
         // set up the sample player
         self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A4d" withExtension:@"aiff"] audioController:self.audioController error:nil];
         self.audioFilePlayer.loop = true;
@@ -35,9 +37,15 @@
 //        [self.audioController addInputReceiver:self.audioReceiver];
 //        [self.audioController addOutputReceiver:self.audioReceiver];
         
-        [self.audioController addInputReceiver:(id< AEAudioReceiver >) self.audioReceiver
-                               forChannels:[NSArray arrayWithObject:[NSNumber numberWithInt:0]]];
-
+        [self.audioController addChannels:[NSArray arrayWithObjects:self.audioFilePlayer, nil]];
+        
+        [self.audioController addOutputReceiver:(id< AEAudioReceiver >) self.audioReceiver
+                                     forChannel:self.audioFilePlayer];
+        
+        //[self.audioController addInputReceiver:(id< AEAudioReceiver >) self.audioReceiver
+        //                       forChannels:[NSArray arrayWithObject:[NSNumber numberWithInt:0]]];
+        
+        //[self.audioController start:nil];
     }
     return self;
 }

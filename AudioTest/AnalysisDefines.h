@@ -9,7 +9,7 @@
 #ifndef AudioTest_AnalysisDefines_h
 #define AudioTest_AnalysisDefines_h
 
-#define kManualFrequency            220.0
+#define kManualFrequency            440.0
 
 #define kRingBufferLength           8192
 #define kRingBufferLengthFloat      8192.0
@@ -28,6 +28,11 @@
 #define kFs         44100
 #define kFsFloat    44100.0
 
-# define kDiffEqnlength 11
+// 1 8 27 48 42
+
+# define kDiffEqnLength 11
+# define kDiffEqnTerms  {1.0, 8.0, 27.0, 48.0, 42.0, 0, -42.0, -48.0, -27.0, -8.0, -1.0}
+
+#define kTestHistoryLength  100
 
 #endif
