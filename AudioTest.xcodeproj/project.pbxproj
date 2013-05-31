@@ -250,11 +250,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC300B2117430D8700DF0365 /* main.m in Sources */,
+				EC785EDB1749F22100CA3876 /* FFTTAnalysisEngine.m in Sources */,
+				EC300B2E17430D8700DF0365 /* FFTTViewController.m in Sources */,
 				65DF892F174877BD0063A508 /* FFTTAudioController.m in Sources */,
 				EC300B2517430D8700DF0365 /* FFTTAppDelegate.m in Sources */,
-				EC300B2E17430D8700DF0365 /* FFTTViewController.m in Sources */,
 				65DF89351748792C0063A508 /* FFTTAudioReceiver.m in Sources */,
-				EC785EDB1749F22100CA3876 /* FFTTAnalysisEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

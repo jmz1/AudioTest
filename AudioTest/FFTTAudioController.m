@@ -12,10 +12,13 @@
 
 @implementation FFTTAudioController
 
-- (id)init
+- (id)initWithViewController:(FFTTViewController *)viewController
 {
     self = [super init];
     if (self) {
+        // set view controller
+        self.viewController = viewController;
+        
         // Set up the audio controller
         self.audioController = [[AEAudioController alloc] initWithAudioDescription:[AEAudioController nonInterleavedFloatStereoAudioDescription] inputEnabled:YES];
         self.audioController.preferredBufferDuration = kSamplesPerWindowFloat / 44100.0 + 0.00001;
@@ -75,6 +78,7 @@
 
 - (void) triggerAnalysis{
     [self.analysisEngine runAnalysis];
+    [self.viewController updateDisplayWithResults:[self.analysisEngine getResults]];
 }
 
 

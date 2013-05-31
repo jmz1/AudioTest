@@ -30,7 +30,7 @@
     float                   *_differenceEqnTerms;
     float                   *_differenceEqnResult;
     float                   _differenceEqnSum;
-    float                   _diffHistory[kPartials][kTestHistoryLength];
+    BOOL                    _beatState[kPartials];
     
     
     // precomputed factors
@@ -43,7 +43,8 @@
 
     
     // test arrays
-    int           *_fftRealInt;
+    int             *_fftRealInt;
+    float           _diffHistory[kPartials][kTestHistoryLength];
     
     // bin calculation arrays
     float           _manualFrequency;
@@ -140,31 +141,47 @@
     
     
     for (int i = 0; i < kPartials; i++) {
-        // shift history bins 'right'
+        // shift history bins into past
         for (int j = kDiffEqnLength - 1; j > 0; j--) {
             _partialsHistory[i][j] = _partialsHistory[i][j-1];
         }
         // add data to start of bin history
         _partialsHistory[i][0] = _freqDataLog[_partialBinEstimatesNearest[i]];
+        
         // multiply history by difference equation
         memcpy(self->_differenceEqnInput, &(_partialsHistory[i][0]), kDiffEqnLength * sizeof(float));
         vDSP_vmul (self->_differenceEqnInput, 1, _differenceEqnTerms, 1, _differenceEqnResult, 1, kDiffEqnLength);
-        //vDSP_vmul (&(_partialsHistory[i][0]), 1, _differenceEqnTerms, 1, _differenceEqnOutput, 1, kDiffEqnLength);
-        // sum difference equation output
+        // sum difference equation output to get derivative
         vDSP_sve(_differenceEqnResult,1,&_differenceEqnSum,kDiffEqnLength);
-        //vDSP_sve(_differenceEqnOutput,1,&_differenceEqnSum2,kDiffEqnLength);
         
-        // shift derivative history 'right'
+        // shift derivative history into past
         for (int j = kTestHistoryLength - 1; j > 0; j--) {
             _diffHistory[i][j] = _diffHistory[i][j-1];
         }
-        // add latest sample
+        // add latest sample to front
         _diffHistory[i][0] = _differenceEqnSum;
+        if (_beatState[i]) {
+            if (_differenceEqnSum < kEdgeDetectDown)
+                _beatState[i] = NO;
+        }
+        else {
+            if (_differenceEqnSum > kEdgeDetectUp)
+                _beatState[i] = YES;
+        }
     }
     
     
     // convert log magnitude to integer as test output
     vDSP_vfix32 (self->_freqDataLog,1,self->_fftRealInt,1,kRingBufferLength);
+}
+
+- (analysisReturnStruct_t) getResults{
+    analysisReturnStruct_t results;
+    for (int i = 0; i < kPartials; i++){
+        results.beatState[i] = _beatState[i];
+    }
+    
+    return results;
 }
 
 @end

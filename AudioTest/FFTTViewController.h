@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FFTTAnalysisEngine.h"
 
 @interface FFTTViewController : UIViewController
 
-@property (nonatomic, retain) IBOutlet UISwitch *switchOutlet;
-@property (nonatomic, retain) IBOutlet UILabel *countLabel;
-@property (nonatomic, retain) IBOutlet UILabel *valueLabel;
 
-- (IBAction)switchChanged:(UISwitch *)sender;
+
+- (void) updateDisplayWithResults:(analysisReturnStruct_t)analyisResult;
 
 @end

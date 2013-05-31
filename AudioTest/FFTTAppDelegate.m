@@ -18,7 +18,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     self.viewController = [[FFTTViewController alloc] initWithNibName:@"FFTTViewController" bundle:nil];
-    self.audioController = [[FFTTAudioController alloc] init];
+    self.audioController = [[FFTTAudioController alloc] initWithViewController:self.viewController];
     
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];

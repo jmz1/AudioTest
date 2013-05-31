@@ -7,7 +7,7 @@
 //
 
 #import "FFTTViewController.h"
-
+#import "FFTTAnalysisEngine.h"
 
 @interface FFTTViewController ()
 
@@ -27,14 +27,10 @@
     // Dispose of any resources that can be recreated.
 }
 
-//- (IBAction)getButtonPressed:(UIButton *)sender {
-//    NSLog(@"Hello");
-//    self.countLabel.text = [NSString stringWithFormat:@"%d",5];
-//}
-- (IBAction)switchChanged:(UISwitch *)sender {
-    NSLog(@"Hello");
-//    NSLog(@"%@", self.countLabel.text);
-    self.countLabel.text = [NSString stringWithFormat:@"%d", 5];
 
+- (void) updateDisplayWithResults:(analysisReturnStruct_t)analyisResult{
+    BOOL thing = analyisResult.beatState[0];
+    thing++;
 }
+
 @end
