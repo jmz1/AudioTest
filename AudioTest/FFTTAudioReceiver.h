@@ -18,8 +18,6 @@
 
 - (int) getTestCount;
 
-- (float) getTestValue;
-
 
 - (void) copyBufferData:(float *)destination bufferHeadPosition:(int *)bufferHead;
 

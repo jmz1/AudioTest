@@ -84,10 +84,6 @@ static void receiverCallbackFunction(id                        receiver,
     return _testCount;
 }
 
-- (float) getTestValue {
-    return _testSample;
-}
-
 - (void) copyBufferData:(float *)destination bufferHeadPosition:(int *)bufferHead {
     NSLog(@"%d",self->_ringBufferHead);
     *bufferHead = self->_ringBufferHead;

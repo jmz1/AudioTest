@@ -12,6 +12,7 @@
 
 #import "AnalysisDefines.h"
 #import "FFTTAudioReceiver.h"
+#import "FFTTAnalysisResults.h"
 
 
 @interface FFTTAnalysisEngine() {
@@ -63,11 +64,14 @@
 
 @implementation FFTTAnalysisEngine
 
-- (id) initWithAudioReceiver:(FFTTAudioReceiver *) receiver{
+- (id) initWithAudioReceiver:(FFTTAudioReceiver *) receiver andResultsObject:(FFTTAnalysisResults *) results {
     if ( !(self = [super init]) ) return nil;
     
     // set receiver to get data from
     self.audioReceiver = receiver;
+    
+    // set receiver to get data from
+    self.analysisResults = results;
 
     // do initialisations for buffers
     self->_inputBufferHead = 0;
@@ -173,15 +177,12 @@
     
     // convert log magnitude to integer as test output
     vDSP_vfix32 (self->_freqDataLog,1,self->_fftRealInt,1,kRingBufferLength);
+    
+    // add beat states to results object
+    for (int i = 0; i < kPartials; i++) {
+        [self.analysisResults.beatStates replaceObjectAtIndex:(i) withObject:[NSNumber numberWithBool:(_beatState[i])]];
+    }
 }
 
-- (analysisReturnStruct_t) getResults{
-    analysisReturnStruct_t results;
-    for (int i = 0; i < kPartials; i++){
-        results.beatState[i] = _beatState[i];
-    }
-    
-    return results;
-}
 
 @end

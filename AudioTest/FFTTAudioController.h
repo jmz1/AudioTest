@@ -9,13 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <TheAmazingAudioEngine/TheAmazingAudioEngine.h>
 
-#import "FFTTAudioReceiver.h"
-#import "FFTTAnalysisEngine.h"
-#import "FFTTViewController.h"
 
 @class FFTTAudioReceiver;
 @class FFTTAnalysisEngine;
 @class FFTTViewController;
+@class FFTTAnalysisResults;
 
 @interface FFTTAudioController : NSObject
 
@@ -24,6 +22,7 @@
 @property (nonatomic, retain) AEAudioFilePlayer *audioFilePlayer;
 @property (nonatomic, retain) FFTTAudioReceiver *audioReceiver;
 @property (nonatomic, retain) FFTTAnalysisEngine *analysisEngine;
+@property (nonatomic, retain) FFTTAnalysisResults *analysisResults;
 
 - (id)initWithViewController:(FFTTViewController*)viewController;
 
@@ -31,7 +30,7 @@
 - (void)stop;
 
 - (int)getARTestCount;
-- (float)getARTestValue;
+
 
 - (void) triggerAnalysis;
 

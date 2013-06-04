@@ -7,12 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FFTTAnalysisEngine.h"
+//#import "FFTTAnalysisEngine.h"
+
+@class FFTTAnalysisResults;
 
 @interface FFTTViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UILabel *beatLabel;
 
-
-- (void) updateDisplayWithResults:(analysisReturnStruct_t)analyisResult;
+- (void) updateDisplayWithResults:(FFTTAnalysisResults*)analysisResults;
 
 @end

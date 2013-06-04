@@ -9,6 +9,11 @@
 #import "FFTTAudioController.h"
 
 #import "AnalysisDefines.h"
+#import "FFTTAudioReceiver.h"
+#import "FFTTAnalysisEngine.h"
+#import "FFTTViewController.h"
+#import "FFTTAnalysisResults.h"
+
 
 @implementation FFTTAudioController
 
@@ -26,25 +31,27 @@
         [self.audioController stop];
         
         // set up the sample player
-        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A4d" withExtension:@"aiff"] audioController:self.audioController error:nil];
+        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A3d" withExtension:@"aiff"] audioController:self.audioController error:nil];
         self.audioFilePlayer.loop = true;
         self.audioFilePlayer.volume = 1.0;
         
         // set up the receiver
         self.audioReceiver = [[FFTTAudioReceiver alloc] initWithParentController:self];
         
+        // set up object for analysis results passing
+        self.analysisResults = [[FFTTAnalysisResults alloc] init];
+        
         // set up analysis engine
-        self.analysisEngine = [[FFTTAnalysisEngine alloc] initWithAudioReceiver:self.audioReceiver];
+        self.analysisEngine = [[FFTTAnalysisEngine alloc] initWithAudioReceiver:self.audioReceiver andResultsObject:self.analysisResults];
         
-        // set up the channels (haven't finished doing this)
-//        [self.audioController addInputReceiver:self.audioReceiver];
-//        [self.audioController addOutputReceiver:self.audioReceiver];
-        
+        // to play audio file as output
         [self.audioController addChannels:[NSArray arrayWithObjects:self.audioFilePlayer, nil]];
         
+        // to add receiver for output
         [self.audioController addOutputReceiver:(id< AEAudioReceiver >) self.audioReceiver
                                      forChannel:self.audioFilePlayer];
         
+        // to add receiver for mic input
         //[self.audioController addInputReceiver:(id< AEAudioReceiver >) self.audioReceiver
         //                       forChannels:[NSArray arrayWithObject:[NSNumber numberWithInt:0]]];
         
@@ -71,14 +78,10 @@
     return [self.audioReceiver getTestCount];
 }
 
-- (float)getARTestValue
-{
-    return [self.audioReceiver getTestValue];
-}
 
 - (void) triggerAnalysis{
     [self.analysisEngine runAnalysis];
-    [self.viewController updateDisplayWithResults:[self.analysisEngine getResults]];
+    [self.viewController updateDisplayWithResults:self.analysisResults];
 }
 
 

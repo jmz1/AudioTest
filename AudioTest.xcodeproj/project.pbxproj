@@ -25,6 +25,7 @@
 		EC300B5D1743AA8B00DF0365 /* Samples in Resources */ = {isa = PBXBuildFile; fileRef = EC300B5C1743AA8B00DF0365 /* Samples */; };
 		EC300B83174993A600DF0365 /* libTheAmazingAudioEngine.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC300B801749939800DF0365 /* libTheAmazingAudioEngine.a */; };
 		EC785EDB1749F22100CA3876 /* FFTTAnalysisEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = EC785EDA1749F22100CA3876 /* FFTTAnalysisEngine.m */; };
+		EC885021175860E700CA1307 /* FFTTAnalysisResults.m in Sources */ = {isa = PBXBuildFile; fileRef = EC885020175860E700CA1307 /* FFTTAnalysisResults.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,8 @@
 		EC785ED91749F22100CA3876 /* FFTTAnalysisEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTTAnalysisEngine.h; sourceTree = "<group>"; };
 		EC785EDA1749F22100CA3876 /* FFTTAnalysisEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTTAnalysisEngine.m; sourceTree = "<group>"; };
 		EC785EDC1749F55900CA3876 /* AnalysisDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnalysisDefines.h; sourceTree = "<group>"; };
+		EC88501F175860E700CA1307 /* FFTTAnalysisResults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTTAnalysisResults.h; sourceTree = "<group>"; };
+		EC885020175860E700CA1307 /* FFTTAnalysisResults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTTAnalysisResults.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +130,8 @@
 				EC785EDC1749F55900CA3876 /* AnalysisDefines.h */,
 				EC785ED91749F22100CA3876 /* FFTTAnalysisEngine.h */,
 				EC785EDA1749F22100CA3876 /* FFTTAnalysisEngine.m */,
+				EC88501F175860E700CA1307 /* FFTTAnalysisResults.h */,
+				EC885020175860E700CA1307 /* FFTTAnalysisResults.m */,
 				EC300B2317430D8700DF0365 /* FFTTAppDelegate.h */,
 				EC300B2417430D8700DF0365 /* FFTTAppDelegate.m */,
 				EC300B2C17430D8700DF0365 /* FFTTViewController.h */,
@@ -255,6 +260,7 @@
 				65DF892F174877BD0063A508 /* FFTTAudioController.m in Sources */,
 				EC300B2517430D8700DF0365 /* FFTTAppDelegate.m in Sources */,
 				65DF89351748792C0063A508 /* FFTTAudioReceiver.m in Sources */,
+				EC885021175860E700CA1307 /* FFTTAnalysisResults.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

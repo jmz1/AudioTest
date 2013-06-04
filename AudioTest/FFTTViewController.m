@@ -8,6 +8,8 @@
 
 #import "FFTTViewController.h"
 #import "FFTTAnalysisEngine.h"
+#import "FFTTAnalysisResults.h"
+#import "AnalysisDefines.h"
 
 @interface FFTTViewController ()
 
@@ -27,10 +29,17 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-- (void) updateDisplayWithResults:(analysisReturnStruct_t)analyisResult{
-    BOOL thing = analyisResult.beatState[0];
-    thing++;
+- (void) updateDisplayWithResults:(FFTTAnalysisResults*)analysisResults{
+    
+    BOOL fundamentalBeat = [[analysisResults.beatStates objectAtIndex:kManualBin] boolValue];
+    
+    if (fundamentalBeat == TRUE) {
+        self.beatLabel.backgroundColor = [UIColor whiteColor];
+    }
+    else {
+        self.beatLabel.backgroundColor = [UIColor blackColor];
+    }
 }
-
+    
+    
 @end

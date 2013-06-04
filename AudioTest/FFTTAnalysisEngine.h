@@ -15,23 +15,11 @@
 
 @interface FFTTAnalysisEngine : NSObject
 
-
-typedef struct analysisReturnStruct analysisReturnStruct_t;
-
-struct analysisReturnStruct {
-    BOOL    beatState[kPartials];
-};
-
-
-
 @property (nonatomic, retain) FFTTAudioReceiver *audioReceiver;
+@property (nonatomic, retain) FFTTAnalysisResults *analysisResults;
 
-
-
-- (id) initWithAudioReceiver:(FFTTAudioReceiver *) receiver;
-
+- (id) initWithAudioReceiver:(FFTTAudioReceiver *) receiver andResultsObject:(FFTTAnalysisResults *) results;
 - (void) runAnalysis;
 
-- (analysisReturnStruct_t) getResults;
 
 @end
