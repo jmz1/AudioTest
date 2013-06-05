@@ -13,7 +13,7 @@
 
 @interface FFTTViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UILabel *beatLabel;
+@property (nonatomic, retain) IBOutletCollection(UILabel) NSMutableArray *beatLabels;
 
 - (void) updateDisplayWithResults:(FFTTAnalysisResults*)analysisResults;
 

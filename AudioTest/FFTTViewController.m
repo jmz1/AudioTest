@@ -30,15 +30,18 @@
 }
 
 - (void) updateDisplayWithResults:(FFTTAnalysisResults*)analysisResults{
-    
-    BOOL fundamentalBeat = [[analysisResults.beatStates objectAtIndex:kManualBin] boolValue];
-    
-    if (fundamentalBeat == TRUE) {
-        self.beatLabel.backgroundColor = [UIColor whiteColor];
+        
+    for (int i = 0; i < [self.beatLabels count]; i++) {
+        UILabel *beatLabel = (UILabel*) [self.beatLabels objectAtIndex:i];
+        BOOL beatState = [[analysisResults.beatStates objectAtIndex:i] boolValue];
+        if (beatState == TRUE) {
+            beatLabel.backgroundColor = [UIColor greenColor];
+        }
+        else{
+            beatLabel.backgroundColor = [UIColor blackColor];
+        }
     }
-    else {
-        self.beatLabel.backgroundColor = [UIColor blackColor];
-    }
+    
 }
     
     
