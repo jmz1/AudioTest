@@ -15,6 +15,8 @@
 
 @property (nonatomic, retain) IBOutletCollection(UILabel) NSMutableArray *beatLabels;
 
+@property (nonatomic, retain) IBOutletCollection(UILabel) NSMutableArray *beatPeriodLabels;
+
 - (void) updateDisplayWithResults:(FFTTAnalysisResults*)analysisResults;
 
 @end

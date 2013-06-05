@@ -41,10 +41,10 @@
     float           _floatZero;
     float           _floatArrayLimit;
     float           _freqToBinFactor;
+    float           _secondsPerFrame;
 
     
     // test arrays
-    int             *_fftRealInt;
     float           _diffHistory[kPartials][kTestHistoryLength];
     
     // bin calculation arrays
@@ -56,7 +56,10 @@
     
     // partials history
     float           _partialsHistory[kPartials][kDiffEqnLength];
-    //float           _differenceEqnOutput[kPartials];
+    
+    int             _beatPeriodCounters[kPartials];
+    float           _fundamentalBeatPeriods[kPartials];
+    
 }
 
 @end
@@ -92,14 +95,12 @@
     self->_floatArrayLimit = kRingBufferLengthHalfFloat - 10.0;;
     self->_manualFrequency = kManualFrequency;
     self->_freqToBinFactor = kRingBufferLengthFloat/kFsFloat;
+    self->_secondsPerFrame = kSamplesPerWindowFloat/kFsFloat;
     self->_differenceEqnInput = (float*)calloc(kDiffEqnLength, sizeof(float));
     self->_differenceEqnTerms = (float*)calloc(kDiffEqnLength, sizeof(float));
     self->_differenceEqnResult = (float*)calloc(kDiffEqnLength, sizeof(float));
     float differenceEqnTermsFromDefine[] = kDiffEqnTerms;
     memcpy(self->_differenceEqnTerms, differenceEqnTermsFromDefine, kDiffEqnLength * sizeof(float));
-    
-    // allocate test variables
-    self->_fftRealInt = (int*)calloc(kRingBufferLength, sizeof(int));
     
     // do FFT initialisations
     _FFTSetup = vDSP_create_fftsetup( kLog2of16K, kFFTRadix2 );
@@ -133,17 +134,8 @@
     vDSP_vdbcon(self->_freqDataMag,1,&_floatOne,self->_freqDataLog,1,kRingBufferLengthHalf,0);
     
     
-    // calculate frequency bins
-    // create set of frequency estimates, just linearly extrapolated from fundamental for now
-//    vDSP_vramp(&_manualFrequency, &_manualFrequency, _partialFreqEstimates, 1, kPartials);
-//    // convert frequency to bin number
-//    vDSP_vsma(_partialFreqEstimates,1, &_freqToBinFactor,&_floatZero,1,_partialBinEstimates,1,kPartials);
-//    // limit to bounds of array
-//    vDSP_vclip(_partialBinEstimates,1,&_floatZero,&_floatArrayLimit,_partialBinEstimatesClipped,1,kPartials);
-//    // round to nearest integer bin
-//    vDSP_vfixr32 (_partialBinEstimatesClipped,1,_partialBinEstimatesNearest,1,kPartials);
-//
     
+    // calculate frequency bins
     for (int i = 0; i < kPartials; i++) {
         _partialFreqEstimates[i] = _manualFrequency * (i+1);
         _partialBinEstimates[i] = _partialFreqEstimates[i] * _freqToBinFactor;
@@ -151,6 +143,7 @@
         _partialBinEstimatesNearest[i] = roundf(_partialBinEstimatesClipped[i]);
     }
     
+    // find beats
     for (int i = 0; i < kPartials; i++) {
         // shift history bins into past
         for (int j = kDiffEqnLength - 1; j > 0; j--) {
@@ -171,23 +164,30 @@
         }
         // add latest sample to front
         _diffHistory[i][0] = _differenceEqnSum;
+        
+        // increment period counter
+        _beatPeriodCounters[i]++;
+        
+        // detect beat transitions
         if (_beatState[i]) {
             if (_differenceEqnSum < kEdgeDetectDown)
                 _beatState[i] = NO;
         }
         else {
-            if (_differenceEqnSum > kEdgeDetectUp)
+            if (_differenceEqnSum > kEdgeDetectUp){
                 _beatState[i] = YES;
+                _fundamentalBeatPeriods[i] = _secondsPerFrame * _beatPeriodCounters[i] * (i+1);
+                _beatPeriodCounters[i] = 0;
+            }
         }
     }
     
     
-    // convert log magnitude to integer as test output
-    vDSP_vfix32 (self->_freqDataLog,1,self->_fftRealInt,1,kRingBufferLength);
     
     // add beat states to results object
     for (int i = 0; i < kPartials; i++) {
         [self.analysisResults.beatStates replaceObjectAtIndex:(i) withObject:[NSNumber numberWithBool:(_beatState[i])]];
+        [self.analysisResults.impliedPeriods replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_fundamentalBeatPeriods[i])]];
     }
 }
 

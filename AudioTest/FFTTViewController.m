@@ -43,6 +43,16 @@
         }
     }
     
+    // iterate through beat period labels, displaying current beat state for each
+    for (int i = 0; i < [self.beatPeriodLabels count]; i++) {
+        UILabel *beatPeriodLabel = (UILabel*) [self.beatPeriodLabels objectAtIndex:i];
+        float impliedPeriod = [[analysisResults.impliedPeriods objectAtIndex:i] floatValue];
+
+        beatPeriodLabel.text = [NSString stringWithFormat:@"%f", impliedPeriod];;
+    }
+
+    
+    
 }
     
     
