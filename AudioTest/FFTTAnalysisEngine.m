@@ -135,14 +135,21 @@
     
     // calculate frequency bins
     // create set of frequency estimates, just linearly extrapolated from fundamental for now
-    vDSP_vramp(&_manualFrequency, &_manualFrequency, _partialFreqEstimates, 1, kPartials);
-    // convert frequency to bin number
-    vDSP_vsma(_partialFreqEstimates,1, &_freqToBinFactor,&_floatZero,1,_partialBinEstimates,1,kPartials);
-    // limit to bounds of array
-    vDSP_vclip(_partialBinEstimates,1,&_floatZero,&_floatArrayLimit,_partialBinEstimatesClipped,1,kPartials);
-    // round to nearest integer bin
-    vDSP_vfixr32 (_partialBinEstimatesClipped,1,_partialBinEstimatesNearest,1,kPartials);
+//    vDSP_vramp(&_manualFrequency, &_manualFrequency, _partialFreqEstimates, 1, kPartials);
+//    // convert frequency to bin number
+//    vDSP_vsma(_partialFreqEstimates,1, &_freqToBinFactor,&_floatZero,1,_partialBinEstimates,1,kPartials);
+//    // limit to bounds of array
+//    vDSP_vclip(_partialBinEstimates,1,&_floatZero,&_floatArrayLimit,_partialBinEstimatesClipped,1,kPartials);
+//    // round to nearest integer bin
+//    vDSP_vfixr32 (_partialBinEstimatesClipped,1,_partialBinEstimatesNearest,1,kPartials);
+//
     
+    for (int i = 0; i < kPartials; i++) {
+        _partialFreqEstimates[i] = _manualFrequency * (i+1);
+        _partialBinEstimates[i] = _partialFreqEstimates[i] * _freqToBinFactor;
+        _partialBinEstimatesClipped[i] = MIN(_partialBinEstimates[i] , _floatArrayLimit);
+        _partialBinEstimatesNearest[i] = roundf(_partialBinEstimatesClipped[i]);
+    }
     
     for (int i = 0; i < kPartials; i++) {
         // shift history bins into past
