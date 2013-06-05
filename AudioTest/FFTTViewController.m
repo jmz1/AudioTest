@@ -30,7 +30,8 @@
 }
 
 - (void) updateDisplayWithResults:(FFTTAnalysisResults*)analysisResults{
-        
+    
+    // iterate through beat labels, displaying current beat state for each
     for (int i = 0; i < [self.beatLabels count]; i++) {
         UILabel *beatLabel = (UILabel*) [self.beatLabels objectAtIndex:i];
         BOOL beatState = [[analysisResults.beatStates objectAtIndex:i] boolValue];

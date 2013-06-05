@@ -37,6 +37,6 @@
 #define kTestHistoryLength  100
 
 #define kEdgeDetectUp       10.0
-#define kEdgeDetectDown     30.0
+#define kEdgeDetectDown     -30.0
 
 #endif
