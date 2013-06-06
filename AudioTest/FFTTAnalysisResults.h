@@ -14,7 +14,7 @@
 }
 
 @property(nonatomic, retain) NSMutableArray*    beatStates;
-@property(nonatomic, retain) NSMutableArray*    impliedPeriods;
+@property(nonatomic, retain) NSMutableArray*    impliedFrequency;
 
 -(id) init;
     

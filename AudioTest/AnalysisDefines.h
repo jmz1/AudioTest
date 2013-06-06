@@ -9,34 +9,36 @@
 #ifndef AudioTest_AnalysisDefines_h
 #define AudioTest_AnalysisDefines_h
 
-#define kManualFrequency            220.0
-#define kManualBin                  4
+#define kManualFrequency            110.0
+//#define kManualFrequency            58.27
+
+#define kManualInharmonicity        0.0001
 
 #define kRingBufferLength           8192
 #define kRingBufferLengthFloat      8192.0
 #define kRingBufferLengthHalf       4096
 #define kRingBufferLengthHalfFloat  4096.0
-#define kRingBufferLengthBytes (kRingBufferLength * sizeof(float))
+#define kRingBufferLengthBytes 		(kRingBufferLength * sizeof(float))
 
-#define kSamplesPerWindow       512
-#define kSamplesPerWindowFloat  512.0
+#define kSamplesPerWindow       	512
+#define kSamplesPerWindowFloat  	512.0
 
-#define kLog2of16K 14
-#define kLog2of8K  13
+#define kLog2of16K 					14
+#define kLog2of8K  					13
 
-#define kPartials 10
+#define kPartials 					12
 
-#define kFs         44100
-#define kFsFloat    44100.0
+#define kFs         				44100
+#define kFsFloat    				44100.0
 
 // 1 8 27 48 42
 
-# define kDiffEqnLength 11
+# define kDiffEqnLength 			11
 # define kDiffEqnTerms  {1.0, 8.0, 27.0, 48.0, 42.0, 0, -42.0, -48.0, -27.0, -8.0, -1.0}
 
-#define kTestHistoryLength  100
+#define kTestHistoryLength  		100
 
-#define kEdgeDetectUp       20.0
-#define kEdgeDetectDown     -30.0
+#define kEdgeDetectUp       		20.0
+#define kEdgeDetectDown     		-30.0
 
 #endif

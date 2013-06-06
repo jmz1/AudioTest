@@ -46,6 +46,7 @@
     
     // test arrays
     float           _diffHistory[kPartials][kTestHistoryLength];
+    //float           _testInharmFactor[kPartials];
     
     // bin calculation arrays
     float           _manualFrequency;
@@ -57,8 +58,9 @@
     // partials history
     float           _partialsHistory[kPartials][kDiffEqnLength];
     
+    // beat period calculation arrays
     int             _beatPeriodCounters[kPartials];
-    float           _fundamentalBeatPeriods[kPartials];
+    float           _impliedFrequencies[kPartials];
     
 }
 
@@ -125,19 +127,21 @@
     vDSP_vmul (_orderedBuffer, 1, _blackmanWindow, 1, _windowedData, 1, kRingBufferLength);
 
     // copy windowed data to real part of FFT buffer
-    memcpy(self->_windowedDataComplex.realp, self->_windowedData, kRingBufferLengthBytes);
+    memcpy(_windowedDataComplex.realp, _windowedData, kRingBufferLengthBytes);
     // perform FFT
     vDSP_fft_zop(_FFTSetup,&(_windowedDataComplex),1,&(_freqDataComplex),1,kLog2of8K,kFFTDirection_Forward);
     // convert to absolute magnitude, does not take square root, log(x) =  2*log(x^(1/2))
-    vDSP_zvmags(&(self->_freqDataComplex),1,self->_freqDataMag,1,kRingBufferLengthHalf);
+    vDSP_zvmags(&(_freqDataComplex),1,_freqDataMag,1,kRingBufferLengthHalf);
     // using Power conversion factor 0, alpha=10, total scaling = 20x MATLAB results
-    vDSP_vdbcon(self->_freqDataMag,1,&_floatOne,self->_freqDataLog,1,kRingBufferLengthHalf,0);
+    vDSP_vdbcon(_freqDataMag,1,&_floatOne,_freqDataLog,1,kRingBufferLengthHalf,0);
     
     
     
     // calculate frequency bins
     for (int i = 0; i < kPartials; i++) {
-        _partialFreqEstimates[i] = _manualFrequency * (i+1);
+        // use fixed harmonicity estimate 
+        _partialFreqEstimates[i] = _manualFrequency * (i+1) *
+            sqrtf(1 + kManualInharmonicity*(powf((i+1), 2.0f)));
         _partialBinEstimates[i] = _partialFreqEstimates[i] * _freqToBinFactor;
         _partialBinEstimatesClipped[i] = MIN(_partialBinEstimates[i] , _floatArrayLimit);
         _partialBinEstimatesNearest[i] = roundf(_partialBinEstimatesClipped[i]);
@@ -153,8 +157,8 @@
         _partialsHistory[i][0] = _freqDataLog[_partialBinEstimatesNearest[i]];
         
         // multiply history by difference equation
-        memcpy(self->_differenceEqnInput, &(_partialsHistory[i][0]), kDiffEqnLength * sizeof(float));
-        vDSP_vmul (self->_differenceEqnInput, 1, _differenceEqnTerms, 1, _differenceEqnResult, 1, kDiffEqnLength);
+        memcpy(_differenceEqnInput, &(_partialsHistory[i][0]), kDiffEqnLength * sizeof(float));
+        vDSP_vmul (_differenceEqnInput, 1, _differenceEqnTerms, 1, _differenceEqnResult, 1, kDiffEqnLength);
         // sum difference equation output to get derivative
         vDSP_sve(_differenceEqnResult,1,&_differenceEqnSum,kDiffEqnLength);
         
@@ -176,7 +180,7 @@
         else {
             if (_differenceEqnSum > kEdgeDetectUp){
                 _beatState[i] = YES;
-                _fundamentalBeatPeriods[i] = _secondsPerFrame * _beatPeriodCounters[i] * (i+1);
+                _impliedFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i] * (i+1));
                 _beatPeriodCounters[i] = 0;
             }
         }
@@ -187,7 +191,7 @@
     // add beat states to results object
     for (int i = 0; i < kPartials; i++) {
         [self.analysisResults.beatStates replaceObjectAtIndex:(i) withObject:[NSNumber numberWithBool:(_beatState[i])]];
-        [self.analysisResults.impliedPeriods replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_fundamentalBeatPeriods[i])]];
+        [self.analysisResults.impliedFrequency replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_impliedFrequencies[i])]];
     }
 }
 

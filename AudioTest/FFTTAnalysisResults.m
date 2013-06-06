@@ -22,13 +22,13 @@
     if ( !(self = [super init]) ) return nil;
     
     self.beatStates = [[NSMutableArray alloc] init];
-    self.impliedPeriods = [[NSMutableArray alloc] init];
+    self.impliedFrequency = [[NSMutableArray alloc] init];
     
     BOOL boolZero = NO;
     
     for (int i = 0; i < kPartials; i++) {
         [self.beatStates addObject:[NSNumber numberWithBool:boolZero]];
-        [self.impliedPeriods addObject:[NSNumber numberWithFloat:(0.0)]];
+        [self.impliedFrequency addObject:[NSNumber numberWithFloat:(0.0)]];
     }
     
     return self;
