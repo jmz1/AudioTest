@@ -9,7 +9,7 @@
 #ifndef AudioTest_AnalysisDefines_h
 #define AudioTest_AnalysisDefines_h
 
-#define kManualFrequency            110.0
+#define kManualFrequency            220.0
 //#define kManualFrequency            58.27
 
 #define kManualInharmonicity        0.0001
@@ -38,7 +38,7 @@
 
 #define kTestHistoryLength  		100
 
-#define kEdgeDetectUp       		20.0
-#define kEdgeDetectDown     		-30.0
+#define kEdgeDetectUp       		80.0
+#define kEdgeDetectDown     		-80.0
 
 #endif
