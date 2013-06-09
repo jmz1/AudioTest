@@ -83,7 +83,7 @@ static void receiverCallbackFunction(id                        receiver,
 }
 
 - (void) copyBufferData:(float *)destination bufferHeadPosition:(int *)bufferHead {
-    NSLog(@"%d",self->_ringBufferHead);
+    //NSLog(@"%d",self->_ringBufferHead);
     *bufferHead = self->_ringBufferHead;
     memcpy(destination, self->_ringBuffer, kRingBufferLengthBytes);
 }

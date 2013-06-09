@@ -20,6 +20,8 @@
 
 @property (nonatomic, retain) IBOutletCollection(UILabel) NSMutableArray *beatPeriodLabels;
 
+@property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *displayLabels;
+
 @property (weak, nonatomic) IBOutlet UITextField *frequencyEntry;
 
 - (void) updateDisplayWithResults:(FFTTAnalysisResults*)analysisResults;

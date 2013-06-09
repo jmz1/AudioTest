@@ -139,6 +139,7 @@
     memcpy(_windowedDataComplex.realp, _windowedData, kRingBufferLengthBytes);
     // perform FFT
     vDSP_fft_zop(_FFTSetup,&(_windowedDataComplex),1,&(_freqDataComplex),1,kLog2of8K,kFFTDirection_Forward);
+    
     // convert to absolute magnitude, does not take square root, log(x) =  2*log(x^(1/2))
     vDSP_zvmags(&(_freqDataComplex),1,_freqDataMag,1,kRingBufferLengthHalf);
     // using Power conversion factor 0, alpha=10, total scaling = 20x MATLAB results

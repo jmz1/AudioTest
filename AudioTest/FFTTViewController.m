@@ -48,7 +48,18 @@
         UILabel *beatPeriodLabel = (UILabel*) [self.beatPeriodLabels objectAtIndex:i];
         float impliedPeriod = [[analysisResults.impliedFrequency objectAtIndex:i] floatValue];
 
-        beatPeriodLabel.text = [NSString stringWithFormat:@"%f", impliedPeriod];;
+        beatPeriodLabel.text = [NSString stringWithFormat:@"%f", impliedPeriod];
+    }
+
+    // iterate through display labels, animating each one
+    for (int i = 0; i < [self.displayLabels count]; i++) {
+        UILabel *displayLabel = (UILabel*) [self.displayLabels objectAtIndex:i];
+        float impliedPeriod = [[analysisResults.impliedFrequency objectAtIndex:i] floatValue];
+        int x = 70;
+        int y = MAX((412 - (impliedPeriod * 100)),0);
+        int width = 25;
+        int height = 5;
+        displayLabel.frame = CGRectMake(x, y, width, height);
     }
 
     
