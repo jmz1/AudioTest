@@ -26,12 +26,12 @@
         
         // Set up the audio controller
         self.audioController = [[AEAudioController alloc] initWithAudioDescription:[AEAudioController nonInterleavedFloatStereoAudioDescription] inputEnabled:YES];
-        self.audioController.preferredBufferDuration = kSamplesPerWindowFloat / 44100.0 + 0.00001;
+        self.audioController.preferredBufferDuration = kSamplesPerWindowFloat / kFsFloat + 0.00001;
         
         [self.audioController stop];
         
         // set up the sample player
-        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A3t" withExtension:@"aiff"] audioController:self.audioController error:nil];
+        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A3d" withExtension:@"aiff"] audioController:self.audioController error:nil];
         self.audioFilePlayer.loop = true;
         self.audioFilePlayer.volume = 1.0;
         
@@ -82,6 +82,10 @@
 - (void) triggerAnalysis{
     [self.analysisEngine runAnalysis];
     [self.viewController updateDisplayWithResults:self.analysisResults];
+}
+
+- (void) updateAnalysisEngineFrequency:(float) newFrequency{
+    self.analysisEngine.fixedFrequency = newFrequency;
 }
 
 

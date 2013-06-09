@@ -15,6 +15,8 @@
 
 @interface FFTTAnalysisEngine : NSObject
 
+@property (assign) float fixedFrequency;
+
 @property (nonatomic, retain) FFTTAudioReceiver *audioReceiver;
 @property (nonatomic, retain) FFTTAnalysisResults *analysisResults;
 

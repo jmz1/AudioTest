@@ -15,8 +15,7 @@
     float       *_ringBuffer;
     int          _ringBufferHead;
     int          _testCount;
-    float        _testSample;
-    dispatch_queue_t _analysisQueue;
+    //dispatch_queue_t _analysisQueue;
     FFTTAudioController *_parentAudioController;
 }
 
@@ -31,7 +30,7 @@
     self->_ringBuffer = (float*)calloc(kRingBufferLength, sizeof(float));
     self->_ringBufferHead = 0;
     
-    self->_analysisQueue = dispatch_queue_create("Analysis Queue",NULL);
+    //self->_analysisQueue = dispatch_queue_create("Analysis Queue",NULL);
     self->_parentAudioController = parentAudioController;
     
     return self;
@@ -66,7 +65,6 @@ static void receiverCallbackFunction(id                        receiver,
     }
     
     THIS->_testCount++;
-    THIS->_testSample = THIS->_ringBuffer[0];
     
     // enqueue analysis
     // create block with: [THIS->_audioController triggerAnalysis];

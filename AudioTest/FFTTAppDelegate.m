@@ -19,6 +19,7 @@
     
     self.viewController = [[FFTTViewController alloc] initWithNibName:@"FFTTViewController" bundle:nil];
     self.audioController = [[FFTTAudioController alloc] initWithViewController:self.viewController];
+    [self.viewController registerAudioController:self.audioController];
     
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];

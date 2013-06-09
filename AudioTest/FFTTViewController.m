@@ -54,6 +54,23 @@
     
     
 }
-    
+
+- (void) registerAudioController:(FFTTAudioController*)audioController{
+    self.audioController = audioController;
+}
+
+- (IBAction)backgroundTap:(id)sender {
+    [self.frequencyEntry resignFirstResponder];
+}
+
+- (IBAction)editedFrequency:(UITextField *)sender {
+    float floatVal = [sender.text floatValue];
+    if (floatVal != 0.0){
+        [self.audioController updateAnalysisEngineFrequency:floatVal];
+    }
+}
+
+
+
     
 @end

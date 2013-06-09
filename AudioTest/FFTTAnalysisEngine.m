@@ -103,12 +103,21 @@
     self->_differenceEqnResult = (float*)calloc(kDiffEqnLength, sizeof(float));
     float differenceEqnTermsFromDefine[] = kDiffEqnTerms;
     memcpy(self->_differenceEqnTerms, differenceEqnTermsFromDefine, kDiffEqnLength * sizeof(float));
+    _fixedFrequency = kManualFrequency;
     
     // do FFT initialisations
     _FFTSetup = vDSP_create_fftsetup( kLog2of16K, kFFTRadix2 );
     
     // create window
-    vDSP_blkman_window (self->_blackmanWindow, kRingBufferLength, 0);
+    //vDSP_blkman_window (self->_blackmanWindow, kRingBufferLength, 0);
+    
+    for (int i = 0; i < kRingBufferLength; i++) {
+        _blackmanWindow[i] = 1
+        - 1.93*cosf(M_2_PI*i/kRingBufferLengthFloat)
+        + 1.29*cos(2.0*M_2_PI*i/kRingBufferLengthFloat)
+        - 0.388*cos(4.0*M_2_PI*i/kRingBufferLengthFloat)
+        + 0.028*cos(6.0*M_2_PI*i/kRingBufferLengthFloat);
+    }
     
     return self;
 }
@@ -140,7 +149,7 @@
     // calculate frequency bins
     for (int i = 0; i < kPartials; i++) {
         // use fixed harmonicity estimate 
-        _partialFreqEstimates[i] = _manualFrequency * (i+1) *
+        _partialFreqEstimates[i] = _fixedFrequency * (i+1) *
             sqrtf(1 + kManualInharmonicity*(powf((i+1), 2.0f)));
         _partialBinEstimates[i] = _partialFreqEstimates[i] * _freqToBinFactor;
         _partialBinEstimatesClipped[i] = MIN(_partialBinEstimates[i] , _floatArrayLimit);

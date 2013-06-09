@@ -34,4 +34,6 @@
 
 - (void) triggerAnalysis;
 
+- (void) updateAnalysisEngineFrequency:(float) newFrequency;
+
 @end
