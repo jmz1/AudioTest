@@ -37,6 +37,7 @@
     // precomputed factors
     FFTSetup     _FFTSetup;
     float           *_blackmanWindow;
+    float           *_flatTopWindow;
     float           _floatOne;
     float           _floatZero;
     float           _floatArrayLimit;
@@ -60,6 +61,7 @@
     
     // beat period calculation arrays
     int             _beatPeriodCounters[kPartials];
+    float           _absoluteFrequencies[kPartials];
     float           _impliedFrequencies[kPartials];
     
 }
@@ -92,6 +94,7 @@
 
     // allocate precomputed factors
     self->_blackmanWindow = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_flatTopWindow = (float*)calloc(kRingBufferLength, sizeof(float));
     self->_floatOne = 1.0;
     self->_floatZero = 0.0;
     self->_floatArrayLimit = kRingBufferLengthHalfFloat - 10.0;;
@@ -109,10 +112,10 @@
     _FFTSetup = vDSP_create_fftsetup( kLog2of16K, kFFTRadix2 );
     
     // create window
-    //vDSP_blkman_window (self->_blackmanWindow, kRingBufferLength, 0);
+    vDSP_blkman_window (self->_blackmanWindow, kRingBufferLength, 0);
     
     for (int i = 0; i < kRingBufferLength; i++) {
-        _blackmanWindow[i] = 1
+        _flatTopWindow[i] = 1
         - 1.93*cosf(M_2_PI*i/kRingBufferLengthFloat)
         + 1.29*cos(2.0*M_2_PI*i/kRingBufferLengthFloat)
         - 0.388*cos(4.0*M_2_PI*i/kRingBufferLengthFloat)
@@ -133,7 +136,8 @@
     memcpy(self->_orderedBuffer + numSamplesUntilEnd, self->_inputBuffer, _inputBufferHead * sizeof(float));
 
     // straight multiplication with window function
-    vDSP_vmul (_orderedBuffer, 1, _blackmanWindow, 1, _windowedData, 1, kRingBufferLength);
+    //vDSP_vmul (_orderedBuffer, 1, _blackmanWindow, 1, _windowedData, 1, kRingBufferLength);
+    vDSP_vmul (_orderedBuffer, 1, _flatTopWindow, 1, _windowedData, 1, kRingBufferLength);
 
     // copy windowed data to real part of FFT buffer
     memcpy(_windowedDataComplex.realp, _windowedData, kRingBufferLengthBytes);
@@ -190,6 +194,7 @@
         else {
             if (_differenceEqnSum > kEdgeDetectUp){
                 _beatState[i] = YES;
+                _absoluteFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i]);
                 _impliedFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i] * (i+1));
                 _beatPeriodCounters[i] = 0;
             }
@@ -201,7 +206,8 @@
     // add beat states to results object
     for (int i = 0; i < kPartials; i++) {
         [self.analysisResults.beatStates replaceObjectAtIndex:(i) withObject:[NSNumber numberWithBool:(_beatState[i])]];
-        [self.analysisResults.impliedFrequency replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_impliedFrequencies[i])]];
+        [self.analysisResults.impliedFrequencies replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_impliedFrequencies[i])]];
+        [self.analysisResults.absoluteFrequencies replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_absoluteFrequencies[i])]];
     }
 }
 

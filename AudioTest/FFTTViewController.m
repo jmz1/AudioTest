@@ -46,7 +46,7 @@
     // iterate through beat period labels, displaying current beat state for each
     for (int i = 0; i < [self.beatPeriodLabels count]; i++) {
         UILabel *beatPeriodLabel = (UILabel*) [self.beatPeriodLabels objectAtIndex:i];
-        float impliedPeriod = [[analysisResults.impliedFrequency objectAtIndex:i] floatValue];
+        float impliedPeriod = [[analysisResults.absoluteFrequencies objectAtIndex:i] floatValue];
 
         beatPeriodLabel.text = [NSString stringWithFormat:@"%f", impliedPeriod];
     }
@@ -54,7 +54,7 @@
     // iterate through display labels, animating each one
     for (int i = 0; i < [self.displayLabels count]; i++) {
         UILabel *displayLabel = (UILabel*) [self.displayLabels objectAtIndex:i];
-        float impliedPeriod = [[analysisResults.impliedFrequency objectAtIndex:i] floatValue];
+        float impliedPeriod = [[analysisResults.impliedFrequencies objectAtIndex:i] floatValue];
         int x = 70;
         int y = MAX((412 - (impliedPeriod * 100)),0);
         int width = 25;

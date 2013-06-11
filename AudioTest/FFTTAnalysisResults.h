@@ -14,7 +14,8 @@
 }
 
 @property(nonatomic, retain) NSMutableArray*    beatStates;
-@property(nonatomic, retain) NSMutableArray*    impliedFrequency;
+@property(nonatomic, retain) NSMutableArray*    impliedFrequencies;
+@property(nonatomic, retain) NSMutableArray*    absoluteFrequencies;
 
 -(id) init;
     

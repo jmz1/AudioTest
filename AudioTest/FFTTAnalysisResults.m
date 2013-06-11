@@ -22,13 +22,15 @@
     if ( !(self = [super init]) ) return nil;
     
     self.beatStates = [[NSMutableArray alloc] init];
-    self.impliedFrequency = [[NSMutableArray alloc] init];
+    self.impliedFrequencies = [[NSMutableArray alloc] init];
+    self.absoluteFrequencies = [[NSMutableArray alloc] init];
     
     BOOL boolZero = NO;
     
     for (int i = 0; i < kPartials; i++) {
         [self.beatStates addObject:[NSNumber numberWithBool:boolZero]];
-        [self.impliedFrequency addObject:[NSNumber numberWithFloat:(0.0)]];
+        [self.impliedFrequencies addObject:[NSNumber numberWithFloat:(0.0)]];
+        [self.absoluteFrequencies addObject:[NSNumber numberWithFloat:(0.0)]];
     }
     
     return self;
