@@ -48,7 +48,7 @@
         UILabel *beatPeriodLabel = (UILabel*) [self.beatPeriodLabels objectAtIndex:i];
         float impliedPeriod = [[analysisResults.absoluteFrequencies objectAtIndex:i] floatValue];
 
-        beatPeriodLabel.text = [NSString stringWithFormat:@"%f", impliedPeriod];
+        beatPeriodLabel.text = [NSString stringWithFormat:@"%.1f", impliedPeriod];
     }
 
     // iterate through display labels, animating each one

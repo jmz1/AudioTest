@@ -31,7 +31,7 @@
         [self.audioController stop];
         
         // set up the sample player
-        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A3-A4" withExtension:@"aiff"] audioController:self.audioController error:nil];
+        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/F2-A3" withExtension:@"aiff"] audioController:self.audioController error:nil];
         self.audioFilePlayer.loop = true;
         self.audioFilePlayer.volume = 1.0;
         
