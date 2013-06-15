@@ -12,7 +12,7 @@
 #define kManualFrequency            220.0
 //#define kManualFrequency            58.27
 
-#define kManualInharmonicity        0.0001
+#define kManualInharmonicity        0.00013
 
 #define kRingBufferLength           8192
 #define kRingBufferLengthFloat      8192.0
