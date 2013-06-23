@@ -23,10 +23,10 @@
 #define kSamplesPerAudioCallback       	512
 #define kSamplesPerAudioCallbackFloat  	512.0
 
-#define kSamplesPerAnalysisWindow      	64
-#define kSamplesPerAnalysisWindowFloat 	64.0
+#define kSamplesPerAnalysisWindow      	128
+#define kSamplesPerAnalysisWindowFloat 	128.0
 
-#define kBufferAnalysisMultiple         8
+#define kBufferAnalysisMultiple         4
 
 #define kLog2of16K 					14
 #define kLog2of8K  					13
@@ -38,19 +38,19 @@
 
 // 1 8 27 48 42
 
-# define kDiffEqnLength 			11
-# define kDiffEqnTerms  {1.0, 8.0, 27.0, 48.0, 42.0, 0, -42.0, -48.0, -27.0, -8.0, -1.0}
-# define kDiffEqnDenominator         512.0
+//# define kDiffEqnLength 			11
+//# define kDiffEqnTerms  {1.0, 8.0, 27.0, 48.0, 42.0, 0, -42.0, -48.0, -27.0, -8.0, -1.0}
+//# define kDiffEqnDenominator         512.0
 
 
-//# define kDiffEqnLength 			19
-//# define kDiffEqnTerms  {1.0, 16.0, 119.0, 544.0, 1700.0, 3808.0, 6188.0, 7072.0, 4862.0, 0, -4862.0, -7072.0, -6188.0, -3808.0, -1700.0, -544.0, -119.0, -16.0, -1.0}
-//#define kDiffEqnDenominator         131072.0
+# define kDiffEqnLength 			19
+# define kDiffEqnTerms  {1.0, 16.0, 119.0, 544.0, 1700.0, 3808.0, 6188.0, 7072.0, 4862.0, 0, -4862.0, -7072.0, -6188.0, -3808.0, -1700.0, -544.0, -119.0, -16.0, -1.0}
+#define kDiffEqnDenominator         131072.0
 
 
 #define kTestHistoryLength  		100
 
-#define kEdgeDetectUp       		+0.05
-#define kEdgeDetectDown     		-0.05
+#define kEdgeDetectUp       		-0.04
+#define kEdgeDetectDown     		-0.08
 
 #endif

@@ -120,10 +120,10 @@
     
     for (int i = 0; i < kRingBufferLength; i++) {
         _flatTopWindow[i] = 1
-        - 1.93*cosf(M_2_PI*i/kRingBufferLengthFloat)
-        + 1.29*cos(2.0*M_2_PI*i/kRingBufferLengthFloat)
-        - 0.388*cos(4.0*M_2_PI*i/kRingBufferLengthFloat)
-        + 0.028*cos(6.0*M_2_PI*i/kRingBufferLengthFloat);
+        - 1.93*cosf(2.0*M_PI*i/kRingBufferLengthFloat)
+        + 1.29*cos(2.0*2.0*M_PI*i/kRingBufferLengthFloat)
+        - 0.388*cos(4.0*2.0*M_PI*i/kRingBufferLengthFloat)
+        + 0.028*cos(6.0*2.0*M_PI*i/kRingBufferLengthFloat);
     }
     
     return self;
