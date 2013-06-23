@@ -27,12 +27,12 @@
     DSPSplitComplex         _freqDataComplex;
     float                   *_freqDataMag;
     float                   *_freqDataLog;
-    float                   *_differenceEqnInput;
-    float                   *_differenceEqnTerms;
-    float                   *_differenceEqnResult;
-    float                   _differenceEqnSum;
-    float                   _derivativeScaled;
-    BOOL                    _beatState[kPartials];
+    //float                   *_differenceEqnInput;
+    //float                   *_differenceEqnTerms;
+    //float                   *_differenceEqnResult;
+    //float                   _differenceEqnSum;
+    //float                   _derivativeScaled;
+    //BOOL                    _beatState[kPartials];
     
     
     // precomputed factors
@@ -44,11 +44,11 @@
     float           _floatArrayLimit;
     float           _freqToBinFactor;
     float           _secondsPerFrame;
-    float           _derivativeScalingFactor;
+    //float           _derivativeScalingFactor;
 
     
     // test arrays
-    float           _diffHistory[kPartials][kTestHistoryLength];
+    //float           _diffHistory[kPartials][kTestHistoryLength];
     //float           _testInharmFactor[kPartials];
     
     // bin calculation arrays
@@ -59,13 +59,19 @@
     int             _partialBinEstimatesNearest[kPartials];
     
     // partials history
-    float           _partialsHistory[kPartials][kDiffEqnLength];
+    //float           _partialsHistory[kPartials][kDiffEqnLength];
     
     // beat period calculation arrays
-    int             _beatPeriodCounters[kPartials];
-    int             _beatPeriodPrevious[kPartials];
+    //int             _beatPeriodCounters[kPartials];
+    //int             _beatPeriodPrevious[kPartials];
     float           _absoluteFrequencies[kPartials];
     float           _impliedFrequencies[kPartials];
+    
+    
+    // NEW STUFF FOR FREQ DOMAIN BEAT CALCULATION
+    float           _partialComplexHistoryReal[kPartials][kComplexHistoryLength];
+    float           _partialComplexHistoryImag[kPartials][kComplexHistoryLength];
+    int             _partialComplexHistoryHead;
     
 }
 
@@ -104,12 +110,12 @@
     self->_manualFrequency = kManualFrequency;
     self->_freqToBinFactor = kRingBufferLengthFloat/kFsFloat;
     self->_secondsPerFrame = kSamplesPerAnalysisWindowFloat/kFsFloat;
-    self->_differenceEqnInput = (float*)calloc(kDiffEqnLength, sizeof(float));
-    self->_differenceEqnTerms = (float*)calloc(kDiffEqnLength, sizeof(float));
-    self->_differenceEqnResult = (float*)calloc(kDiffEqnLength, sizeof(float));
-    float differenceEqnTermsFromDefine[] = kDiffEqnTerms;
-    memcpy(self->_differenceEqnTerms, differenceEqnTermsFromDefine, kDiffEqnLength * sizeof(float));
-    self->_derivativeScalingFactor = 1/kDiffEqnDenominator;
+    //self->_differenceEqnInput = (float*)calloc(kDiffEqnLength, sizeof(float));
+    //self->_differenceEqnTerms = (float*)calloc(kDiffEqnLength, sizeof(float));
+    //self->_differenceEqnResult = (float*)calloc(kDiffEqnLength, sizeof(float));
+    //float differenceEqnTermsFromDefine[] = kDiffEqnTerms;
+    //memcpy(self->_differenceEqnTerms, differenceEqnTermsFromDefine, kDiffEqnLength * sizeof(float));
+    //self->_derivativeScalingFactor = 1/kDiffEqnDenominator;
     _fixedFrequency = kManualFrequency;
     
     // do FFT initialisations
@@ -169,58 +175,20 @@
     
     // find beats
     for (int i = 0; i < kPartials; i++) {
-        // shift history bins into past
-        for (int j = kDiffEqnLength - 1; j > 0; j--) {
-            _partialsHistory[i][j] = _partialsHistory[i][j-1];
-        }
-        // add data to start of bin history
-        _partialsHistory[i][0] = _freqDataLog[_partialBinEstimatesNearest[i]];
+        // perform phase unwrapping
         
-        // multiply history by difference equation
-        memcpy(_differenceEqnInput, &(_partialsHistory[i][0]), kDiffEqnLength * sizeof(float));
-        vDSP_vmul (_differenceEqnInput, 1, _differenceEqnTerms, 1, _differenceEqnResult, 1, kDiffEqnLength);
-        // sum difference equation output to get derivative
-        vDSP_sve(_differenceEqnResult,1,&_differenceEqnSum,kDiffEqnLength);
+        // radians_per_frame = ((fft_bin_number)/n_fft)*(n_shift)*2*pi;
         
-        // divide by scaling factor particular to difference equation
-        _derivativeScaled = _differenceEqnSum * _derivativeScalingFactor;
-        //_derivativeScaled = _differenceEqnSum;
+        // add frequency domain data to partials history
         
-        // shift derivative history into past
-        for (int j = kTestHistoryLength - 1; j > 0; j--) {
-            _diffHistory[i][j] = _diffHistory[i][j-1];
-        }
-        // add latest sample to front
-        _diffHistory[i][0] = _derivativeScaled;
-        
-        // increment period counter
-        _beatPeriodCounters[i]++;
-        
-        // detect beat transitions
-        if (_beatState[i]) {
-            if (_derivativeScaled < kEdgeDetectDown)
-                _beatState[i] = NO;
-        }
-        else {
-            if (_derivativeScaled > kEdgeDetectUp){
-                _beatState[i] = YES;
-//                float beatPeriodAverage = (_beatPeriodCounters[i] + _beatPeriodPrevious[i])/2;
-//                _absoluteFrequencies[i] = 1/(_secondsPerFrame * beatPeriodAverage);
-//                _impliedFrequencies[i] = 1/(_secondsPerFrame * beatPeriodAverage * (i+1));
-                _absoluteFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i]);
-                _impliedFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i] * (i+1));
-
-                _beatPeriodPrevious[i] = _beatPeriodCounters[i];
-                _beatPeriodCounters[i] = 0;
-            }
-        }
+        // reorder and add to padded buffers
     }
     
     
     
     // add beat states to results object
     for (int i = 0; i < kPartials; i++) {
-        [self.analysisResults.beatStates replaceObjectAtIndex:(i) withObject:[NSNumber numberWithBool:(_beatState[i])]];
+        //[self.analysisResults.beatStates replaceObjectAtIndex:(i) withObject:[NSNumber numberWithBool:(_beatState[i])]];
         [self.analysisResults.impliedFrequencies replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_impliedFrequencies[i])]];
         [self.analysisResults.absoluteFrequencies replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_absoluteFrequencies[i])]];
     }

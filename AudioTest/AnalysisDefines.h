@@ -53,4 +53,8 @@
 #define kEdgeDetectUp       		+0.05
 #define kEdgeDetectDown     		-0.05
 
+// NEW STUFF HERE
+
+#define kComplexHistoryLength       512
+
 #endif
