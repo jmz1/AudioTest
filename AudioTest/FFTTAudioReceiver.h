@@ -18,6 +18,7 @@
 
 - (int) getTestCount;
 
+- (void) feedNewSamples;
 
 - (void) copyBufferData:(float *)destination bufferHeadPosition:(int *)bufferHead;
 

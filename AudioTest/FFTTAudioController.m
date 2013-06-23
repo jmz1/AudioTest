@@ -26,12 +26,12 @@
         
         // Set up the audio controller
         self.audioController = [[AEAudioController alloc] initWithAudioDescription:[AEAudioController nonInterleavedFloatStereoAudioDescription] inputEnabled:YES];
-        self.audioController.preferredBufferDuration = kSamplesPerWindowFloat / kFsFloat + 0.00001;
+        self.audioController.preferredBufferDuration = kSamplesPerAudioCallbackFloat / kFsFloat + 0.00001;
         
         [self.audioController stop];
         
         // set up the sample player
-        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A2d" withExtension:@"aiff"] audioController:self.audioController error:nil];
+        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A3-A4" withExtension:@"aiff"] audioController:self.audioController error:nil];
         self.audioFilePlayer.loop = true;
         self.audioFilePlayer.volume = 1.0;
         
@@ -45,15 +45,15 @@
         self.analysisEngine = [[FFTTAnalysisEngine alloc] initWithAudioReceiver:self.audioReceiver andResultsObject:self.analysisResults];
         
         // to play audio file as output
-        //[self.audioController addChannels:[NSArray arrayWithObjects:self.audioFilePlayer, nil]];
+        [self.audioController addChannels:[NSArray arrayWithObjects:self.audioFilePlayer, nil]];
         
         // to add receiver for output
-        //[self.audioController addOutputReceiver:(id< AEAudioReceiver >) self.audioReceiver
-        //                             forChannel:self.audioFilePlayer];
+        [self.audioController addOutputReceiver:(id< AEAudioReceiver >) self.audioReceiver
+                                     forChannel:self.audioFilePlayer];
         
         // to add receiver for mic input
-        [self.audioController addInputReceiver:(id< AEAudioReceiver >) self.audioReceiver
-                               forChannels:[NSArray arrayWithObject:[NSNumber numberWithInt:0]]];
+        //[self.audioController addInputReceiver:(id< AEAudioReceiver >) self.audioReceiver
+        //                       forChannels:[NSArray arrayWithObject:[NSNumber numberWithInt:0]]];
         
         [self.audioController start:nil];
     }
@@ -80,7 +80,10 @@
 
 
 - (void) triggerAnalysis{
-    [self.analysisEngine runAnalysis];
+    // run analysis number of times equal to buffer oversampling
+    for (int i = 0; i<kBufferAnalysisMultiple; i++) {
+        [self.analysisEngine runAnalysis];
+    }
     [self.viewController updateDisplayWithResults:self.analysisResults];
 }
 

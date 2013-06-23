@@ -13,8 +13,10 @@
 
 @interface FFTTAudioReceiver () {
     float       *_ringBuffer;
-    int          _ringBufferHead;
-    int          _testCount;
+    int         _ringBufferHead;
+    float       *_newSamplesBuffer;
+    int         _newSamplesHead;
+    int         _testCount;
     //dispatch_queue_t _analysisQueue;
     FFTTAudioController *_parentAudioController;
 }
@@ -26,8 +28,11 @@
 
 - (id)initWithParentController:(FFTTAudioController *)parentAudioController {
     if ( !(self = [super init]) ) return nil;
-
+    
     self->_ringBuffer = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_ringBufferHead = 0;
+    
+    self->_newSamplesBuffer = (float*)calloc(kSamplesPerAudioCallback, sizeof(float));
     self->_ringBufferHead = 0;
     
     //self->_analysisQueue = dispatch_queue_create("Analysis Queue",NULL);
@@ -49,20 +54,10 @@ static void receiverCallbackFunction(id                        receiver,
     
     // Get a pointer to the audio buffer that we can advance
     float *audioPtr = audio->mBuffers[0].mData;
-    
-    // Copy in contiguous segments, wrapping around if necessary
-    int remainingFrames = frames;
-    while ( remainingFrames > 0 ) {
-        int framesToCopy = MIN(remainingFrames, kRingBufferLength - (THIS->_ringBufferHead));
-        memcpy(THIS->_ringBuffer + THIS->_ringBufferHead, audioPtr, framesToCopy * sizeof(float));
-        audioPtr += framesToCopy;
         
-        int buffer_head = THIS->_ringBufferHead + framesToCopy;
-        if ( buffer_head == kRingBufferLength ) buffer_head = 0;
-        OSMemoryBarrier();
-        THIS->_ringBufferHead = buffer_head;
-        remainingFrames -= framesToCopy;
-    }
+    // copy all new samples
+    memcpy(THIS->_newSamplesBuffer, audioPtr, kSamplesPerAudioCallback * sizeof(float));
+    THIS->_newSamplesHead = 0;
     
     THIS->_testCount++;
     
@@ -72,6 +67,22 @@ static void receiverCallbackFunction(id                        receiver,
         [THIS->_parentAudioController triggerAnalysis];
     });
     
+}
+
+- (void) feedNewSamples {
+    // Copy in contiguous segments, wrapping around if necessary
+
+    //int framesToCopy = MIN(remainingFrames, kRingBufferLength - (_ringBufferHead));
+    memcpy(_ringBuffer + _ringBufferHead,
+           _newSamplesBuffer + _newSamplesHead, kSamplesPerAnalysisWindow * sizeof(float));
+    // increment new samples buffer head
+    _newSamplesHead += kSamplesPerAnalysisWindow;
+    // wrap around buffer head position
+    int buffer_head = _ringBufferHead + kSamplesPerAnalysisWindow;
+    if ( buffer_head == kRingBufferLength ) buffer_head = 0;
+//    OSMemoryBarrier();
+    _ringBufferHead = buffer_head;
+
 }
 
 - (AEAudioControllerAudioCallback)receiverCallback {
@@ -88,5 +99,7 @@ static void receiverCallbackFunction(id                        receiver,
     memcpy(destination, self->_ringBuffer, kRingBufferLengthBytes);
 }
 
+// 1. feed some samples from newSamples into main buffer
+// 2. call copyBufferData as normal
 
 @end

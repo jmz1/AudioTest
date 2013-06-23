@@ -31,6 +31,7 @@
     float                   *_differenceEqnTerms;
     float                   *_differenceEqnResult;
     float                   _differenceEqnSum;
+    float                   _derivativeScaled;
     BOOL                    _beatState[kPartials];
     
     
@@ -43,6 +44,7 @@
     float           _floatArrayLimit;
     float           _freqToBinFactor;
     float           _secondsPerFrame;
+    float           _derivativeScalingFactor;
 
     
     // test arrays
@@ -101,12 +103,13 @@
     self->_floatArrayLimit = kRingBufferLengthHalfFloat - 10.0;;
     self->_manualFrequency = kManualFrequency;
     self->_freqToBinFactor = kRingBufferLengthFloat/kFsFloat;
-    self->_secondsPerFrame = kSamplesPerWindowFloat/kFsFloat;
+    self->_secondsPerFrame = kSamplesPerAnalysisWindowFloat/kFsFloat;
     self->_differenceEqnInput = (float*)calloc(kDiffEqnLength, sizeof(float));
     self->_differenceEqnTerms = (float*)calloc(kDiffEqnLength, sizeof(float));
     self->_differenceEqnResult = (float*)calloc(kDiffEqnLength, sizeof(float));
     float differenceEqnTermsFromDefine[] = kDiffEqnTerms;
     memcpy(self->_differenceEqnTerms, differenceEqnTermsFromDefine, kDiffEqnLength * sizeof(float));
+    self->_derivativeScalingFactor = 1/kDiffEqnDenominator;
     _fixedFrequency = kManualFrequency;
     
     // do FFT initialisations
@@ -128,6 +131,8 @@
 
 
 - (void) runAnalysis{
+    // feed new samples to main buffer
+    [self.audioReceiver feedNewSamples];
     // copy data to local buffer
     [self.audioReceiver copyBufferData:_inputBuffer bufferHeadPosition:(&_inputBufferHead)];
     
@@ -177,29 +182,33 @@
         // sum difference equation output to get derivative
         vDSP_sve(_differenceEqnResult,1,&_differenceEqnSum,kDiffEqnLength);
         
+        // divide by scaling factor particular to difference equation
+        _derivativeScaled = _differenceEqnSum * _derivativeScalingFactor;
+        //_derivativeScaled = _differenceEqnSum;
+        
         // shift derivative history into past
         for (int j = kTestHistoryLength - 1; j > 0; j--) {
             _diffHistory[i][j] = _diffHistory[i][j-1];
         }
         // add latest sample to front
-        _diffHistory[i][0] = _differenceEqnSum;
+        _diffHistory[i][0] = _derivativeScaled;
         
         // increment period counter
         _beatPeriodCounters[i]++;
         
         // detect beat transitions
         if (_beatState[i]) {
-            if (_differenceEqnSum < kEdgeDetectDown)
+            if (_derivativeScaled < kEdgeDetectDown)
                 _beatState[i] = NO;
         }
         else {
-            if (_differenceEqnSum > kEdgeDetectUp){
+            if (_derivativeScaled > kEdgeDetectUp){
                 _beatState[i] = YES;
-                float beatPeriodAverage = (_beatPeriodCounters[i] + _beatPeriodPrevious[i])/2;
-                _absoluteFrequencies[i] = 1/(_secondsPerFrame * beatPeriodAverage);
-                _impliedFrequencies[i] = 1/(_secondsPerFrame * beatPeriodAverage * (i+1));
-//                _absoluteFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i]);
-//                _impliedFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i] * (i+1));
+//                float beatPeriodAverage = (_beatPeriodCounters[i] + _beatPeriodPrevious[i])/2;
+//                _absoluteFrequencies[i] = 1/(_secondsPerFrame * beatPeriodAverage);
+//                _impliedFrequencies[i] = 1/(_secondsPerFrame * beatPeriodAverage * (i+1));
+                _absoluteFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i]);
+                _impliedFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i] * (i+1));
 
                 _beatPeriodPrevious[i] = _beatPeriodCounters[i];
                 _beatPeriodCounters[i] = 0;
