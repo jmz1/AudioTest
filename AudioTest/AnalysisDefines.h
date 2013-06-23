@@ -38,9 +38,9 @@
 
 // 1 8 27 48 42
 
-# define kDiffEqnLength 			11
-# define kDiffEqnTerms  {1.0, 8.0, 27.0, 48.0, 42.0, 0, -42.0, -48.0, -27.0, -8.0, -1.0}
-# define kDiffEqnDenominator         512.0
+//# define kDiffEqnLength 			11
+//# define kDiffEqnTerms  {1.0, 8.0, 27.0, 48.0, 42.0, 0, -42.0, -48.0, -27.0, -8.0, -1.0}
+//# define kDiffEqnDenominator         512.0
 
 
 //# define kDiffEqnLength 			19
@@ -48,10 +48,10 @@
 //#define kDiffEqnDenominator         131072.0
 
 
-#define kTestHistoryLength  		100
+//#define kTestHistoryLength  		100
 
-#define kEdgeDetectUp       		+0.05
-#define kEdgeDetectDown     		-0.05
+//#define kEdgeDetectUp       		+0.05
+//#define kEdgeDetectDown     		-0.05
 
 // NEW STUFF HERE
 

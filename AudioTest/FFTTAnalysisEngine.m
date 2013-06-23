@@ -8,7 +8,8 @@
 
 #import "FFTTAnalysisEngine.h"
 
-#import <Accelerate/Accelerate.h> 
+#import <Accelerate/Accelerate.h>
+#import <complex.h>
 
 #import "AnalysisDefines.h"
 #import "FFTTAudioReceiver.h"
@@ -45,6 +46,7 @@
     float           _freqToBinFactor;
     float           _secondsPerFrame;
     //float           _derivativeScalingFactor;
+    float           _radiansPerFrame;
 
     
     // test arrays
@@ -72,6 +74,9 @@
     float           _partialComplexHistoryReal[kPartials][kComplexHistoryLength];
     float           _partialComplexHistoryImag[kPartials][kComplexHistoryLength];
     int             _partialComplexHistoryHead;
+    
+    // persistent phase unwrapping terms
+    float           _phaseUnwrapTerm[kPartials];
     
 }
 
@@ -106,7 +111,7 @@
     self->_flatTopWindow = (float*)calloc(kRingBufferLength, sizeof(float));
     self->_floatOne = 1.0;
     self->_floatZero = 0.0;
-    self->_floatArrayLimit = kRingBufferLengthHalfFloat - 10.0;;
+    self->_floatArrayLimit = kRingBufferLengthHalfFloat - 10.0;
     self->_manualFrequency = kManualFrequency;
     self->_freqToBinFactor = kRingBufferLengthFloat/kFsFloat;
     self->_secondsPerFrame = kSamplesPerAnalysisWindowFloat/kFsFloat;
@@ -116,7 +121,8 @@
     //float differenceEqnTermsFromDefine[] = kDiffEqnTerms;
     //memcpy(self->_differenceEqnTerms, differenceEqnTermsFromDefine, kDiffEqnLength * sizeof(float));
     //self->_derivativeScalingFactor = 1/kDiffEqnDenominator;
-    _fixedFrequency = kManualFrequency;
+    self->_fixedFrequency = kManualFrequency;
+    self->_radiansPerFrame = (kSamplesPerAnalysisWindowFloat*M_2_PI)/kRingBufferLengthFloat;
     
     // do FFT initialisations
     _FFTSetup = vDSP_create_fftsetup( kLog2of16K, kFFTRadix2 );
@@ -177,12 +183,41 @@
     for (int i = 0; i < kPartials; i++) {
         // perform phase unwrapping
         
-        // radians_per_frame = ((fft_bin_number)/n_fft)*(n_shift)*2*pi;
+        // get partials terms used
+        float newReal = _freqDataComplex.realp[_partialBinEstimatesNearest[i]];
+        float newImag = _freqDataComplex.imagp[_partialBinEstimatesNearest[i]];
+        
+        // construct complex number
+        _Complex float newComplexValue = newReal + _Complex_I * newImag;
+        
+        // convert to magnitude/phase
+        float   mag = cabsf(newComplexValue);
+        float   angle = cargf(newComplexValue);
+        
+        // add phase term in proportion to frequency bin used, and take modulus to keep in (0,M_2_PI)
+        _phaseUnwrapTerm[i] = _phaseUnwrapTerm[i] + _radiansPerFrame * ((float) _partialBinEstimatesNearest[i] + 1.0);
+        _phaseUnwrapTerm[i] = fmodf(_phaseUnwrapTerm[i], M_2_PI);
+        
+        // subtract phase
+        float angleUnwrapped = angle - _phaseUnwrapTerm[i];
+        
+        // return to polar form
+        float shiftedReal = mag * cos(angleUnwrapped);
+        float shiftedImag = mag * sin(angleUnwrapped);
         
         // add frequency domain data to partials history
+        _partialComplexHistoryReal[i][_partialComplexHistoryHead] = shiftedReal;
+        _partialComplexHistoryImag[i][_partialComplexHistoryHead] = shiftedImag;
         
         // reorder and add to padded buffers
+        
+        // take FFT of history
     }
+    
+    // increment complex write head, wrapping around
+    _partialComplexHistoryHead++;
+    _partialComplexHistoryHead = _partialComplexHistoryHead % kComplexHistoryLength;
+    
     
     
     
