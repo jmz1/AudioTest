@@ -204,11 +204,11 @@
         else {
             if (_derivativeScaled > kEdgeDetectUp){
                 _beatState[i] = YES;
-//                float beatPeriodAverage = (_beatPeriodCounters[i] + _beatPeriodPrevious[i])/2;
-//                _absoluteFrequencies[i] = 1/(_secondsPerFrame * beatPeriodAverage);
-//                _impliedFrequencies[i] = 1/(_secondsPerFrame * beatPeriodAverage * (i+1));
-                _absoluteFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i]);
-                _impliedFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i] * (i+1));
+                float beatPeriodAverage = (_beatPeriodCounters[i] + _beatPeriodPrevious[i])/2;
+                _absoluteFrequencies[i] = 1/(_secondsPerFrame * beatPeriodAverage);
+                _impliedFrequencies[i] = 1/(_secondsPerFrame * beatPeriodAverage * (i+1));
+//                _absoluteFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i]);
+//                _impliedFrequencies[i] = 1/(_secondsPerFrame * _beatPeriodCounters[i] * (i+1));
 
                 _beatPeriodPrevious[i] = _beatPeriodCounters[i];
                 _beatPeriodCounters[i] = 0;
