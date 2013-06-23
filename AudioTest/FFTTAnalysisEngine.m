@@ -46,7 +46,7 @@
     float           _freqToBinFactor;
     float           _secondsPerFrame;
     //float           _derivativeScalingFactor;
-    float           _radiansPerFrame;
+    double           _radiansPerFrame;
 
     
     // test arrays
@@ -76,7 +76,7 @@
     int             _partialComplexHistoryHead;
     
     // persistent phase unwrapping terms
-    float           _phaseUnwrapTerm[kPartials];
+    double           _phaseUnwrapTerm[kPartials];
     
 }
 
@@ -122,7 +122,7 @@
     //memcpy(self->_differenceEqnTerms, differenceEqnTermsFromDefine, kDiffEqnLength * sizeof(float));
     //self->_derivativeScalingFactor = 1/kDiffEqnDenominator;
     self->_fixedFrequency = kManualFrequency;
-    self->_radiansPerFrame = (kSamplesPerAnalysisWindowFloat*M_2_PI)/kRingBufferLengthFloat;
+    self->_radiansPerFrame = ((double) kSamplesPerAnalysisWindowFloat*M_PI*2.0)/((double)kRingBufferLengthFloat);
     
     // do FFT initialisations
     _FFTSetup = vDSP_create_fftsetup( kLog2of16K, kFFTRadix2 );
@@ -132,10 +132,10 @@
     
     for (int i = 0; i < kRingBufferLength; i++) {
         _flatTopWindow[i] = 1
-        - 1.93*cosf(M_2_PI*i/kRingBufferLengthFloat)
-        + 1.29*cos(2.0*M_2_PI*i/kRingBufferLengthFloat)
-        - 0.388*cos(4.0*M_2_PI*i/kRingBufferLengthFloat)
-        + 0.028*cos(6.0*M_2_PI*i/kRingBufferLengthFloat);
+        - 1.93*cosf(2.0*M_PI*i/kRingBufferLengthFloat)
+        + 1.29*cos(2.0*2.0*M_PI*i/kRingBufferLengthFloat)
+        - 0.388*cos(4.0*2.0*M_PI*i/kRingBufferLengthFloat)
+        + 0.028*cos(6.0*2.0*M_PI*i/kRingBufferLengthFloat);
     }
     
     return self;
@@ -163,9 +163,9 @@
     vDSP_fft_zop(_FFTSetup,&(_windowedDataComplex),1,&(_freqDataComplex),1,kLog2of8K,kFFTDirection_Forward);
     
     // convert to absolute magnitude, does not take square root, log(x) =  2*log(x^(1/2))
-    vDSP_zvmags(&(_freqDataComplex),1,_freqDataMag,1,kRingBufferLengthHalf);
+    //vDSP_zvmags(&(_freqDataComplex),1,_freqDataMag,1,kRingBufferLengthHalf);
     // using Power conversion factor 0, alpha=10, total scaling = 20x MATLAB results
-    vDSP_vdbcon(_freqDataMag,1,&_floatOne,_freqDataLog,1,kRingBufferLengthHalf,0);
+    //vDSP_vdbcon(_freqDataMag,1,&_floatOne,_freqDataLog,1,kRingBufferLengthHalf,0);
     
     
     
@@ -184,26 +184,27 @@
         // perform phase unwrapping
         
         // get partials terms used
-        float newReal = _freqDataComplex.realp[_partialBinEstimatesNearest[i]];
-        float newImag = _freqDataComplex.imagp[_partialBinEstimatesNearest[i]];
+        double newReal = _freqDataComplex.realp[_partialBinEstimatesNearest[i]];
+        double newImag = _freqDataComplex.imagp[_partialBinEstimatesNearest[i]];
         
         // construct complex number
-        _Complex float newComplexValue = newReal + _Complex_I * newImag;
+        _Complex double newComplexValue = newReal + _Complex_I * newImag;
         
         // convert to magnitude/phase
-        float   mag = cabsf(newComplexValue);
-        float   angle = cargf(newComplexValue);
+        double   mag = cabs(newComplexValue);
+        double   angle = carg(newComplexValue);
         
         // add phase term in proportion to frequency bin used, and take modulus to keep in (0,M_2_PI)
-        _phaseUnwrapTerm[i] = _phaseUnwrapTerm[i] + _radiansPerFrame * ((float) _partialBinEstimatesNearest[i] + 1.0);
-        _phaseUnwrapTerm[i] = fmodf(_phaseUnwrapTerm[i], M_2_PI);
+        _phaseUnwrapTerm[i] = _phaseUnwrapTerm[i] + _radiansPerFrame * ((double) _partialBinEstimatesNearest[i]);
+        _phaseUnwrapTerm[i] = fmod(_phaseUnwrapTerm[i], (M_PI*2.0));
         
         // subtract phase
-        float angleUnwrapped = angle - _phaseUnwrapTerm[i];
+        double angleUnwrapped = angle - _phaseUnwrapTerm[i];
+        //float angleUnwrapped = angle;
         
         // return to polar form
-        float shiftedReal = mag * cos(angleUnwrapped);
-        float shiftedImag = mag * sin(angleUnwrapped);
+        double shiftedReal = mag * cos(angleUnwrapped);
+        double shiftedImag = mag * sin(angleUnwrapped);
         
         // add frequency domain data to partials history
         _partialComplexHistoryReal[i][_partialComplexHistoryHead] = shiftedReal;
