@@ -57,4 +57,7 @@
 
 #define kComplexHistoryLength       512
 
+#define kUnwrappedPadLength         8192
+#define kLog2ofUnwrappedPadLength   13
+
 #endif
