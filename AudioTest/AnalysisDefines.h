@@ -23,10 +23,10 @@
 #define kSamplesPerAudioCallback       	512
 #define kSamplesPerAudioCallbackFloat  	512.0
 
-#define kSamplesPerAnalysisWindow      	64
-#define kSamplesPerAnalysisWindowFloat 	64.0
+#define kSamplesPerAnalysisWindow      	128
+#define kSamplesPerAnalysisWindowFloat 	128.0
 
-#define kBufferAnalysisMultiple         8
+#define kBufferAnalysisMultiple         4
 
 #define kLog2of16K 					14
 #define kLog2of8K  					13

@@ -52,7 +52,10 @@
     // test arrays
     //float           _diffHistory[kPartials][kTestHistoryLength];
     //float           _testInharmFactor[kPartials];
-    float           _testArray[kUnwrappedPadLength];
+    
+    float           _testArrayReal[kUnwrappedPadLength];
+    float           _testArrayImag[kUnwrappedPadLength];
+    float           _testArrayAbs[kUnwrappedPadLength];
     
     // bin calculation arrays
     float           _manualFrequency;
@@ -77,6 +80,7 @@
     int             _partialComplexHistoryHead;
     DSPSplitComplex _unwrappedDataPaddedTime;
     DSPSplitComplex _unwrappedDataPaddedFreq;
+    float           *_unwrappedFreqAbs;
     
     // persistent phase unwrapping terms
     double           _phaseUnwrapTerm[kPartials];
@@ -148,6 +152,9 @@
     self->_unwrappedDataPaddedFreq.realp = (float*)calloc(kUnwrappedPadLength, sizeof(float));
     self->_unwrappedDataPaddedFreq.imagp = (float*)calloc(kUnwrappedPadLength, sizeof(float));
     
+    self->_unwrappedFreqAbs = (float*)calloc(kUnwrappedPadLength, sizeof(float));
+    
+    
     return self;
 }
 
@@ -187,6 +194,8 @@
         _partialBinEstimates[i] = _partialFreqEstimates[i] * _freqToBinFactor;
         _partialBinEstimatesClipped[i] = MIN(_partialBinEstimates[i] , _floatArrayLimit);
         _partialBinEstimatesNearest[i] = roundf(_partialBinEstimatesClipped[i]);
+        // modification to give sub-nearest bin and thus sufficient distance
+        _partialBinEstimatesNearest[i] = _partialBinEstimatesNearest[i] - 1;
     }
     
     // find beats
@@ -226,18 +235,27 @@
         // data point at _partialComplexHistoryHead is newest sample, belongs at end
         int numUnwrappedSamplesUntilEnd = kComplexHistoryLength - _partialComplexHistoryHeadAdvanced;
         // add oldest data at start
-        memcpy(_unwrappedDataPaddedTime.realp, self->_partialComplexHistoryReal[i] + _partialComplexHistoryHeadAdvanced, numUnwrappedSamplesUntilEnd * sizeof(float));
-        memcpy(_unwrappedDataPaddedTime.imagp, self->_partialComplexHistoryImag[i] + _partialComplexHistoryHeadAdvanced, numUnwrappedSamplesUntilEnd * sizeof(float));
+        memcpy(_unwrappedDataPaddedTime.realp, self->_partialComplexHistoryReal[i] + _partialComplexHistoryHeadAdvanced, 
+            numUnwrappedSamplesUntilEnd * sizeof(float));
+        memcpy(_unwrappedDataPaddedTime.imagp, self->_partialComplexHistoryImag[i] + _partialComplexHistoryHeadAdvanced, 
+            numUnwrappedSamplesUntilEnd * sizeof(float));
         // add newest data to end
-        memcpy(_unwrappedDataPaddedTime.realp + numUnwrappedSamplesUntilEnd, self->_partialComplexHistoryReal[i], _partialComplexHistoryHeadAdvanced * sizeof(float));
-        memcpy(_unwrappedDataPaddedTime.imagp + numUnwrappedSamplesUntilEnd, self->_partialComplexHistoryImag[i], _partialComplexHistoryHeadAdvanced * sizeof(float));
+        memcpy(_unwrappedDataPaddedTime.realp + numUnwrappedSamplesUntilEnd, self->_partialComplexHistoryReal[i], 
+            _partialComplexHistoryHeadAdvanced * sizeof(float));
+        memcpy(_unwrappedDataPaddedTime.imagp + numUnwrappedSamplesUntilEnd, self->_partialComplexHistoryImag[i], 
+            _partialComplexHistoryHeadAdvanced * sizeof(float));
 
         
         // take FFT of history
         vDSP_fft_zop(_FFTSetup,&(_unwrappedDataPaddedTime),1,&(_unwrappedDataPaddedFreq),1,kLog2ofUnwrappedPadLength,kFFTDirection_Forward);
+        
+        // convert to absolute magnitude
+        vDSP_zvabs (&(_unwrappedDataPaddedFreq),1,_unwrappedFreqAbs,1,kUnwrappedPadLength);
 
         // copy to test array
-        memcpy(_testArray,_unwrappedDataPaddedFreq.realp,kUnwrappedPadLength);
+        memcpy(_testArrayReal,_unwrappedDataPaddedFreq.realp,kUnwrappedPadLength);
+        memcpy(_testArrayImag,_unwrappedDataPaddedFreq.imagp,kUnwrappedPadLength);
+        memcpy(_testArrayAbs,_unwrappedFreqAbs,kUnwrappedPadLength);
         int blarg = 0;
     }
     
