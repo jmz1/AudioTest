@@ -45,8 +45,9 @@
     float           _floatArrayLimit;
     float           _freqToBinFactor;
     float           _secondsPerFrame;
-    //float           _derivativeScalingFactor;
-    double           _radiansPerFrame;
+    //float          _derivativeScalingFactor;
+    double          _radiansPerFrame;
+    float           _indexToFreqFactor;
 
     
     // test arrays
@@ -130,6 +131,7 @@
     //self->_derivativeScalingFactor = 1/kDiffEqnDenominator;
     self->_fixedFrequency = kManualFrequency;
     self->_radiansPerFrame = ((double) kSamplesPerAnalysisWindowFloat*M_PI*2.0)/((double)kRingBufferLengthFloat);
+    self->_indexToFreqFactor = (kFsFloat)/(kUnwrappedPadLength * kSamplesPerAnalysisWindowFloat);
     
     // do FFT initialisations
     _FFTSetup = vDSP_create_fftsetup( kLog2of16K, kFFTRadix2 );
@@ -257,7 +259,37 @@
         memcpy(_testArrayImag,_unwrappedDataPaddedFreq.imagp,kUnwrappedPadLength);
         memcpy(_testArrayAbs,_unwrappedFreqAbs,kUnwrappedPadLength);
         int blarg = 0;
-    }
+
+        float maxValue1 = 0;
+        float maxValue2 = 0;
+
+        vDSP_Length maxIndex1 = 0;
+        vDSP_Length maxIndex2 = 0;
+
+        // find first maxima
+        vDSP_maxvi(_unwrappedFreqAbs,1,&maxValue1,&maxIndex1,kUnwrappedPadLength);
+
+        // zero out region around first maxima
+        for (int j = -kZeroRegion; j < kZeroRegion; j++)
+        {
+            _unwrappedFreqAbs[(maxIndex1 + j) % kUnwrappedPadLength] = 0.0;
+        }
+        
+        // find second maxima
+        vDSP_maxvi(_unwrappedFreqAbs,1,&maxValue2,&maxIndex2,kUnwrappedPadLength);
+        
+        // find difference between maxima indices, wrapping around
+        int maximaSpread = (maxIndex1 - maxIndex2)%kUnwrappedPadLength;
+        if (maximaSpread > (kUnwrappedPadLength/2)) {
+            maximaSpread = kUnwrappedPadLength - maximaSpread;
+        }
+        
+        _absoluteFrequencies[i] = maximaSpread * _indexToFreqFactor;
+        
+       blarg = 1;
+
+
+     }
     
     // increment complex write head, wrapping around
     _partialComplexHistoryHead++;

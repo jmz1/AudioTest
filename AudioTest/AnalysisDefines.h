@@ -60,4 +60,7 @@
 #define kUnwrappedPadLength         8192
 #define kLog2ofUnwrappedPadLength   13
 
+// 10 gives minimum discrimination of 0.42 Hz at 128 samples/frame, 8192 length padded FFT
+#define kZeroRegion					15
+
 #endif
