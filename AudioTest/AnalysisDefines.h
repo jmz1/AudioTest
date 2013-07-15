@@ -9,6 +9,8 @@
 #ifndef AudioTest_AnalysisDefines_h
 #define AudioTest_AnalysisDefines_h
 
+#define kBoolUseSamples				TRUE
+
 #define kManualFrequency            220.0
 //#define kManualFrequency            58.27
 

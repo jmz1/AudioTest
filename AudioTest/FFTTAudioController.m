@@ -31,7 +31,7 @@
         [self.audioController stop];
         
         // set up the sample player
-        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A3-E4" withExtension:@"aiff"] audioController:self.audioController error:nil];
+        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A3d" withExtension:@"aiff"] audioController:self.audioController error:nil];
         self.audioFilePlayer.loop = true;
         self.audioFilePlayer.volume = 1.0;
         
@@ -44,15 +44,22 @@
         // set up analysis engine
         self.analysisEngine = [[FFTTAnalysisEngine alloc] initWithAudioReceiver:self.audioReceiver andResultsObject:self.analysisResults];
         
-        // to play audio file as output
-        //[self.audioController addChannels:[NSArray arrayWithObjects:self.audioFilePlayer, nil]];
+        BOOL usingSamples = kBoolUseSamples;
         
-        // to add receiver for output
-        //[self.audioController addOutputReceiver:(id< AEAudioReceiver >) self.audioReceiver forChannel:self.audioFilePlayer];
-        
-        // to add receiver for mic input
-        [self.audioController addInputReceiver:(id< AEAudioReceiver >) self.audioReceiver forChannels:[NSArray arrayWithObject:[NSNumber numberWithInt:0]]];
-        
+        if (usingSamples == TRUE) {
+            // to play audio file as output
+            [self.audioController addChannels:[NSArray arrayWithObjects:self.audioFilePlayer, nil]];
+            
+            // to add receiver for output
+            [self.audioController addOutputReceiver:(id< AEAudioReceiver >) self.audioReceiver forChannel:self.audioFilePlayer];
+            
+        }
+        else {
+            // to add receiver for mic input
+            [self.audioController addInputReceiver:(id< AEAudioReceiver >) self.audioReceiver forChannels:[NSArray arrayWithObject:[NSNumber numberWithInt:0]]];
+        }
+
+
         [self.audioController start:nil];
     }
     return self;
