@@ -16,11 +16,13 @@
 
 #define kManualInharmonicity        0.00013
 
-#define kRingBufferLength           8192
-#define kRingBufferLengthFloat      8192.0
-#define kRingBufferLengthHalf       4096
-#define kRingBufferLengthHalfFloat  4096.0
-#define kRingBufferLengthBytes 		(kRingBufferLength * sizeof(float))
+#define kRingBufferLength           	8192
+#define kRingBufferLengthFloat      	8192.0
+#define kRingBufferLengthHalf       	4096
+#define kRingBufferLengthHalfFloat  	4096.0
+#define kRingBufferLengthBytes 			(kRingBufferLength * sizeof(float))
+#define kRingBufferLengthDouble     	(kRingBufferLength * 2)
+#define kRingBufferLengthDoubleBytes    (kRingBufferLength * 2 * sizeof(float))
 
 #define kSamplesPerAudioCallback       	512
 #define kSamplesPerAudioCallbackFloat  	512.0
@@ -28,6 +30,7 @@
 #define kSamplesPerAnalysisWindow      	128
 #define kSamplesPerAnalysisWindowFloat 	128.0
 
+// needs to be ratio of kSamplesPerAudioCallback/kSamplesPerAnalysisWindow
 #define kBufferAnalysisMultiple         4
 
 #define kLog2of16K 					14

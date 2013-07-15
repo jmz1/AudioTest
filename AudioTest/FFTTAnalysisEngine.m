@@ -23,8 +23,12 @@
     
     // computation arrays
     float                   *_windowedData;
-    DSPSplitComplex         _windowedDataComplex;
-    DSPSplitComplex         _freqDataComplex;
+    DSPSplitComplex         _windowedDataTime;
+    DSPSplitComplex         _windowedDataFreq;
+    DSPSplitComplex         _unwindowedDataTime;
+    DSPSplitComplex         _unwindowedDataFreq;
+    DSPSplitComplex         _powerSpectralDensity;
+    DSPSplitComplex         _autoCorrelation;
     float                   *_freqDataMag;
     float                   *_freqDataLog;
     float                   *_differenceEqnInput;
@@ -50,6 +54,7 @@
     // test arrays
     float           _diffHistory[kPartials][kTestHistoryLength];
     //float           _testInharmFactor[kPartials];
+    float           _testAcor[kRingBufferLengthDouble];
     
     // bin calculation arrays
     float           _manualFrequency;
@@ -80,7 +85,7 @@
     // set receiver to get data from
     self.audioReceiver = receiver;
     
-    // set receiver to get data from
+    // set analysis results object for sharing data
     self.analysisResults = results;
 
     // do initialisations for buffers
@@ -88,16 +93,30 @@
     self->_inputBuffer = (float*)calloc(kRingBufferLength, sizeof(float));
     self->_orderedBuffer = (float*)calloc(kRingBufferLength, sizeof(float));
     self->_windowedData = (float*)calloc(kRingBufferLength, sizeof(float));
-    self->_windowedDataComplex.realp = (float*)calloc(kRingBufferLength, sizeof(float));
-    self->_windowedDataComplex.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
-    self->_freqDataComplex.realp = (float*)calloc(kRingBufferLength, sizeof(float));
-    self->_freqDataComplex.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
+
+    self->_windowedDataTime.realp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_windowedDataTime.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_windowedDataFreq.realp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_windowedDataFreq.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
+
+    self->_unwindowedDataTime.realp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
+    self->_unwindowedDataTime.imagp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
+    self->_unwindowedDataFreq.realp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
+    self->_unwindowedDataFreq.imagp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
+
+    self->_powerSpectralDensity.realp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
+    self->_powerSpectralDensity.imagp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
+    self->_autoCorrelation.realp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
+    self->_autoCorrelation.imagp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
+
     self->_freqDataMag = (float*)calloc(kRingBufferLengthHalf, sizeof(float));
     self->_freqDataLog = (float*)calloc(kRingBufferLengthHalf, sizeof(float));
 
-    // allocate precomputed factors
     self->_blackmanWindow = (float*)calloc(kRingBufferLength, sizeof(float));
     self->_flatTopWindow = (float*)calloc(kRingBufferLength, sizeof(float));
+
+    // calculate precomputed factors
+
     self->_floatOne = 1.0;
     self->_floatZero = 0.0;
     self->_floatArrayLimit = kRingBufferLengthHalfFloat - 10.0;;
@@ -146,16 +165,32 @@
     vDSP_vmul (_orderedBuffer, 1, _flatTopWindow, 1, _windowedData, 1, kRingBufferLength);
 
     // copy windowed data to real part of FFT buffer
-    memcpy(_windowedDataComplex.realp, _windowedData, kRingBufferLengthBytes);
+    memcpy(_windowedDataTime.realp, _windowedData, kRingBufferLengthBytes);
     // perform FFT
-    vDSP_fft_zop(_FFTSetup,&(_windowedDataComplex),1,&(_freqDataComplex),1,kLog2of8K,kFFTDirection_Forward);
+    vDSP_fft_zop(_FFTSetup,&(_windowedDataTime),1,&(_windowedDataFreq),1,kLog2of8K,kFFTDirection_Forward);
     
     // convert to absolute magnitude, does not take square root, log(x) =  2*log(x^(1/2))
-    vDSP_zvmags(&(_freqDataComplex),1,_freqDataMag,1,kRingBufferLengthHalf);
+    vDSP_zvmags(&(_windowedDataFreq),1,_freqDataMag,1,kRingBufferLengthHalf);
     // using Power conversion factor 0, alpha=10, total scaling = 20x MATLAB results
     vDSP_vdbcon(_freqDataMag,1,&_floatOne,_freqDataLog,1,kRingBufferLengthHalf,0);
     
     
+    // calculate signal autocorrelation from power IFFT
+
+    // copy unwindowed signal to buffer
+    memcpy( _unwindowedDataTime.realp, _orderedBuffer,kRingBufferLengthBytes);
+    // perform FFT
+    vDSP_fft_zop(_FFTSetup,&(_unwindowedDataTime),1,&(_unwindowedDataFreq),1,kLog2of16K,kFFTDirection_Forward);
+    // take squared magnitude of spectrum to get PSD
+    vDSP_zvmags(&(_unwindowedDataFreq),1,_powerSpectralDensity.realp,1,kRingBufferLengthDouble);
+    // zero DC component of PSD
+    _powerSpectralDensity.realp[0] = 0.0;
+    // perform IFFT to generator autocorrelation
+    vDSP_fft_zop(_FFTSetup,&(_powerSpectralDensity),1,&(_autoCorrelation),1,kLog2of16K,kFFTDirection_Inverse);
+    // copy to test array
+    memcpy( &(_testAcor), _autoCorrelation.realp,kRingBufferLengthDoubleBytes);
+
+
     
     // calculate frequency bins
     for (int i = 0; i < kPartials; i++) {
