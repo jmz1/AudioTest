@@ -33,6 +33,8 @@
         [self.absoluteFrequencies addObject:[NSNumber numberWithFloat:(0.0)]];
     }
     
+    self.detectedFrequency = [NSNumber numberWithFloat:(0.0)];
+    
     return self;
 }
 

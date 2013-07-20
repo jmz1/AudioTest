@@ -34,6 +34,9 @@
 
 - (void) triggerAnalysis;
 
-- (void) updateAnalysisEngineFrequency:(float) newFrequency;
+- (void) updateAnalysisEngineMaxDetectFrequency:(float) newMaxFrequency;
+
+- (void) updateAnalysisEngineMinDetectFrequency:(float) newMinFrequency;
+
 
 @end

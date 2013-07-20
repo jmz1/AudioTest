@@ -31,7 +31,7 @@
         [self.audioController stop];
         
         // set up the sample player
-        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A3d" withExtension:@"aiff"] audioController:self.audioController error:nil];
+        self.audioFilePlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:@"Samples/A3-E4" withExtension:@"aiff"] audioController:self.audioController error:nil];
         self.audioFilePlayer.loop = true;
         self.audioFilePlayer.volume = 1.0;
         
@@ -92,9 +92,13 @@
     [self.viewController updateDisplayWithResults:self.analysisResults];
 }
 
-- (void) updateAnalysisEngineFrequency:(float) newFrequency{
-    self.analysisEngine.fixedFrequency = newFrequency;
+
+- (void) updateAnalysisEngineMaxDetectFrequency:(float) newMaxFrequency{
+    self.analysisEngine.maximumAcorFrequency = newMaxFrequency;
 }
 
+- (void) updateAnalysisEngineMinDetectFrequency:(float) newMinFrequency{
+    self.analysisEngine.minimumAcorFrequency = newMinFrequency;
+}
 
 @end

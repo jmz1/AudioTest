@@ -36,7 +36,7 @@
 #define kLog2of16K 					14
 #define kLog2of8K  					13
 
-#define kPartials 					12
+#define kPartials 					5
 
 #define kFs         				44100
 #define kFsFloat    				44100.0
@@ -46,6 +46,11 @@
 //# define kDiffEqnLength 			11
 //# define kDiffEqnTerms  {1.0, 8.0, 27.0, 48.0, 42.0, 0, -42.0, -48.0, -27.0, -8.0, -1.0}
 //# define kDiffEqnDenominator         512.0
+
+#define kDefaultMinAcorFrequency	200
+#define kDefaultMaxAcorFrequency	4000
+
+#define kMinContiguousFreq			25
 
 
 # define kDiffEqnLength 			19

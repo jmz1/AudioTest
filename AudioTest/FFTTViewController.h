@@ -22,7 +22,12 @@
 
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *displayLabels;
 
-@property (weak, nonatomic) IBOutlet UITextField *frequencyEntry;
+@property (weak, nonatomic) IBOutlet UILabel *detectedFrequencyLabel;
+
+
+@property (weak, nonatomic) IBOutlet UITextField *minFrequencyEntry;
+@property (weak, nonatomic) IBOutlet UITextField *maxFrequencyEntry;
+
 
 - (void) updateDisplayWithResults:(FFTTAnalysisResults*)analysisResults;
 
@@ -30,6 +35,8 @@
 
 - (IBAction)backgroundTap:(id)sender;
 
-- (IBAction)editedFrequency:(UITextField *)sender;
+- (IBAction)editedMinFrequency:(UITextField *)sender;
+
+- (IBAction)editedMaxFrequency:(UITextField *)sender;
 
 @end

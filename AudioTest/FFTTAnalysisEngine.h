@@ -15,7 +15,8 @@
 
 @interface FFTTAnalysisEngine : NSObject
 
-@property (assign) float fixedFrequency;
+@property (assign) float minimumAcorFrequency;
+@property (assign) float maximumAcorFrequency;
 
 @property (nonatomic, retain) FFTTAudioReceiver *audioReceiver;
 @property (nonatomic, retain) FFTTAnalysisResults *analysisResults;

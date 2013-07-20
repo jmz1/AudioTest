@@ -54,7 +54,16 @@
     // test arrays
     float           _diffHistory[kPartials][kTestHistoryLength];
     //float           _testInharmFactor[kPartials];
-    float           _testAcor[kRingBufferLengthDouble];
+    float           _testAcor[kRingBufferLength];
+
+    // bounds for frequency detection
+    float           _minimumAcorFrequency;
+    float           _maximumAcorFrequency;
+
+    // fundamental period estimate history
+    int             _periodHistory[kMinContiguousFreq];
+    int             _periodHistoryIndex;
+    int             _periodEstimate;
     
     // bin calculation arrays
     float           _manualFrequency;
@@ -99,15 +108,15 @@
     self->_windowedDataFreq.realp = (float*)calloc(kRingBufferLength, sizeof(float));
     self->_windowedDataFreq.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
 
-    self->_unwindowedDataTime.realp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
-    self->_unwindowedDataTime.imagp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
-    self->_unwindowedDataFreq.realp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
-    self->_unwindowedDataFreq.imagp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
+    self->_unwindowedDataTime.realp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_unwindowedDataTime.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_unwindowedDataFreq.realp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_unwindowedDataFreq.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
 
-    self->_powerSpectralDensity.realp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
-    self->_powerSpectralDensity.imagp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
-    self->_autoCorrelation.realp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
-    self->_autoCorrelation.imagp = (float*)calloc(kRingBufferLengthDouble, sizeof(float));
+    self->_powerSpectralDensity.realp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_powerSpectralDensity.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_autoCorrelation.realp = (float*)calloc(kRingBufferLength, sizeof(float));
+    self->_autoCorrelation.imagp = (float*)calloc(kRingBufferLength, sizeof(float));
 
     self->_freqDataMag = (float*)calloc(kRingBufferLengthHalf, sizeof(float));
     self->_freqDataLog = (float*)calloc(kRingBufferLengthHalf, sizeof(float));
@@ -129,8 +138,15 @@
     float differenceEqnTermsFromDefine[] = kDiffEqnTerms;
     memcpy(self->_differenceEqnTerms, differenceEqnTermsFromDefine, kDiffEqnLength * sizeof(float));
     self->_derivativeScalingFactor = 1/kDiffEqnDenominator;
-    _fixedFrequency = kManualFrequency;
+    //_fixedFrequency = kManualFrequency;
     
+    self->_maximumAcorFrequency = kDefaultMaxAcorFrequency;
+    self->_minimumAcorFrequency = kDefaultMinAcorFrequency;
+
+    // initialise indexes
+    self->_periodHistoryIndex = 0;
+    self->_periodEstimate = 1;
+
     // do FFT initialisations
     _FFTSetup = vDSP_create_fftsetup( kLog2of16K, kFFTRadix2 );
     
@@ -180,22 +196,68 @@
     // copy unwindowed signal to buffer
     memcpy( _unwindowedDataTime.realp, _orderedBuffer,kRingBufferLengthBytes);
     // perform FFT
-    vDSP_fft_zop(_FFTSetup,&(_unwindowedDataTime),1,&(_unwindowedDataFreq),1,kLog2of16K,kFFTDirection_Forward);
+    vDSP_fft_zop(_FFTSetup,&(_unwindowedDataTime),1,&(_unwindowedDataFreq),1,kLog2of8K,kFFTDirection_Forward);
     // take squared magnitude of spectrum to get PSD
-    vDSP_zvmags(&(_unwindowedDataFreq),1,_powerSpectralDensity.realp,1,kRingBufferLengthDouble);
+    vDSP_zvmags(&(_unwindowedDataFreq),1,_powerSpectralDensity.realp,1,kRingBufferLength);
     // zero DC component of PSD
     _powerSpectralDensity.realp[0] = 0.0;
     // perform IFFT to generator autocorrelation
-    vDSP_fft_zop(_FFTSetup,&(_powerSpectralDensity),1,&(_autoCorrelation),1,kLog2of16K,kFFTDirection_Inverse);
+    vDSP_fft_zop(_FFTSetup,&(_powerSpectralDensity),1,&(_autoCorrelation),1,kLog2of8K,kFFTDirection_Inverse);
     // copy to test array
-    memcpy( &(_testAcor), _autoCorrelation.realp,kRingBufferLengthDoubleBytes);
+    memcpy( &(_testAcor), _autoCorrelation.realp,kRingBufferLengthBytes);
 
+    // find peak of autocorrelation
 
+    int minimumAcorPeriod = kFs/_maximumAcorFrequency;
+    int maximumAcorPeriod = kFs/_minimumAcorFrequency;
+
+    // zero out initial values (lowest periods)
+    for (int i = 0; i < minimumAcorPeriod; i++)
+    {
+        _autoCorrelation.realp[i] = 0.0;
+    }
+
+    float acorMaxValue = 0.0;
+    vDSP_Length acorMaxIndex = 1;
+    // find maximum autocorrelation value
+    vDSP_maxvi((_autoCorrelation.realp),1,&acorMaxValue,&acorMaxIndex,maximumAcorPeriod);
+
+    // store index in rolling buffer to check for contiguity of estimate
+    _periodHistory[_periodHistoryIndex] = acorMaxIndex;
+    // increment index
+    _periodHistoryIndex++;
+    _periodHistoryIndex = (_periodHistoryIndex % kMinContiguousFreq);
+
+    // check if all entries in rolling buffer are the same value
+    BOOL bufferValuesIdentical = YES;
+    for (int i = 0; i < kMinContiguousFreq; i++)
+    {
+        if (_periodHistory[i] != _periodHistory[(i+1)%kMinContiguousFreq])
+        {
+            bufferValuesIdentical = NO;
+        }
+    }
+
+    // only update if number of identical estimates have been achieved
+    if (bufferValuesIdentical == YES)
+    {
+        // only update if change is greater than 2 periods
+        if ((acorMaxIndex != (_periodEstimate+2)) && (acorMaxIndex != (_periodEstimate+1)) 
+            && (acorMaxIndex != (_periodEstimate-1)) && (acorMaxIndex != (_periodEstimate-2)) && (acorMaxIndex != minimumAcorPeriod))
+        {
+            _periodEstimate = acorMaxIndex;
+        }
+    }
+
+    float frequencyEstimate = kFsFloat/((float) _periodEstimate);
     
+
+
+
     // calculate frequency bins
     for (int i = 0; i < kPartials; i++) {
         // use fixed harmonicity estimate 
-        _partialFreqEstimates[i] = _fixedFrequency * (i+1) *
+        _partialFreqEstimates[i] = frequencyEstimate * (i+1) *
             sqrtf(1 + kManualInharmonicity*(powf((i+1), 2.0f)));
         _partialBinEstimates[i] = _partialFreqEstimates[i] * _freqToBinFactor;
         _partialBinEstimatesClipped[i] = MIN(_partialBinEstimates[i] , _floatArrayLimit);
@@ -259,6 +321,12 @@
         [self.analysisResults.impliedFrequencies replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_impliedFrequencies[i])]];
         [self.analysisResults.absoluteFrequencies replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_absoluteFrequencies[i])]];
     }
+
+    self.analysisResults.detectedFrequency = [NSNumber numberWithFloat:((float)frequencyEstimate)];
+
+    
+    // test to output period
+    //[self.analysisResults.absoluteFrequencies replaceObjectAtIndex:(0) withObject:[NSNumber numberWithFloat:((float)_periodEstimate)]];
 }
 
 
