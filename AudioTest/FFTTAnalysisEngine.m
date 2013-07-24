@@ -73,7 +73,9 @@
     int             _partialBinEstimatesNearest[kPartials];
     
     // partials history
-    float           _partialsHistory[kPartials][kDiffEqnLength];
+    float           _partialsHistory[kPartials][kPartialHistoryLength];
+    int             _partialHistoryIndex;
+    float           _partialHistoryAverage[kPartials];
     
     // beat period calculation arrays
     int             _beatPeriodCounters[kPartials];
@@ -146,6 +148,7 @@
     // initialise indexes
     self->_periodHistoryIndex = 0;
     self->_periodEstimate = 1;
+    self->_partialHistoryIndex = 0;
 
     // do FFT initialisations
     _FFTSetup = vDSP_create_fftsetup( kLog2of16K, kFFTRadix2 );
@@ -266,22 +269,29 @@
     
     // find beats
     for (int i = 0; i < kPartials; i++) {
-        // shift history bins into past
-        for (int j = kDiffEqnLength - 1; j > 0; j--) {
-            _partialsHistory[i][j] = _partialsHistory[i][j-1];
-        }
-        // add data to start of bin history
-        _partialsHistory[i][0] = _freqDataLog[_partialBinEstimatesNearest[i]];
+
+        // get oldest data about to be overwritten
+        float previousOldestPartialHistory = _partialsHistory[i][_partialHistoryIndex];
+        // add data to current point in index
+        float newPartialHistory = _freqDataLog[_partialBinEstimatesNearest[i]];
+        _partialsHistory[i][_partialHistoryIndex] = newPartialHistory;
+        // maintain moving average
+        _partialHistoryAverage[i] += newPartialHistory;
+        _partialHistoryAverage[i] -= previousOldestPartialHistory;
+
+        float averaged = _partialHistoryAverage[i]/((float) kPartialHistoryLength);
+
+        _derivativeScaled = newPartialHistory - averaged;
         
-        // multiply history by difference equation
-        memcpy(_differenceEqnInput, &(_partialsHistory[i][0]), kDiffEqnLength * sizeof(float));
-        vDSP_vmul (_differenceEqnInput, 1, _differenceEqnTerms, 1, _differenceEqnResult, 1, kDiffEqnLength);
-        // sum difference equation output to get derivative
-        vDSP_sve(_differenceEqnResult,1,&_differenceEqnSum,kDiffEqnLength);
+        // // multiply history by difference equation
+        // memcpy(_differenceEqnInput, &(_partialsHistory[i][0]), kDiffEqnLength * sizeof(float));
+        // vDSP_vmul (_differenceEqnInput, 1, _differenceEqnTerms, 1, _differenceEqnResult, 1, kDiffEqnLength);
+        // // sum difference equation output to get derivative
+        // vDSP_sve(_differenceEqnResult,1,&_differenceEqnSum,kDiffEqnLength);
         
-        // divide by scaling factor particular to difference equation
-        _derivativeScaled = _differenceEqnSum * _derivativeScalingFactor;
-        //_derivativeScaled = _differenceEqnSum;
+        // // divide by scaling factor particular to difference equation
+        // _derivativeScaled = _differenceEqnSum * _derivativeScalingFactor;
+        // //_derivativeScaled = _differenceEqnSum;
         
         // shift derivative history into past
         for (int j = kTestHistoryLength - 1; j > 0; j--) {
@@ -290,6 +300,14 @@
         // add latest sample to front
         _diffHistory[i][0] = _derivativeScaled;
         
+        // find average of partials history
+
+
+
+
+
+
+
         // increment period counter
         _beatPeriodCounters[i]++;
         
@@ -313,6 +331,9 @@
         }
     }
     
+    // increment partial history index
+    _partialHistoryIndex++;
+    _partialHistoryIndex = _partialHistoryIndex % kPartialHistoryLength;
     
     
     // add beat states to results object
