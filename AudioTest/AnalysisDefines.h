@@ -60,12 +60,12 @@
 #define kDiffEqnDenominator         131072.0
 
 
-#define kTestHistoryLength  		100
+#define kTestHistoryLength  		200
 
-//#define kEdgeDetectUp       		-0.04
-//#define kEdgeDetectDown     		-0.08
+#define kEdgeDetectUp       		-0.04
+#define kEdgeDetectDown     		-0.08
 
-#define kEdgeDetectUp       		1.0
-#define kEdgeDetectDown     		0.0
+//#define kEdgeDetectUp       		1.0
+//#define kEdgeDetectDown     		0.0
 
 #endif
