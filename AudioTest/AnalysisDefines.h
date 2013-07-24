@@ -18,7 +18,7 @@
 #define kManualFrequency            220.0
 //#define kManualFrequency            58.27
 
-#define kManualInharmonicity        0.00013
+#define kManualInharmonicity        0.0000013
 
 #define kRingBufferLength           	8192
 #define kRingBufferLengthFloat      	8192.0
@@ -67,6 +67,6 @@
 // #define kEdgeDetectDown     		-0.08
 
 #define kEdgeDetectUp       		1.0
-#define kEdgeDetectDown     		-5.0
+#define kEdgeDetectDown     		-0.0
 
 #endif

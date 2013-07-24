@@ -270,18 +270,19 @@
     // find beats
     for (int i = 0; i < kPartials; i++) {
 
-        // get oldest data about to be overwritten
-        float previousOldestPartialHistory = _partialsHistory[i][_partialHistoryIndex];
-        // add data to current point in index
-        float newPartialHistory = _freqDataLog[_partialBinEstimatesNearest[i]];
-        _partialsHistory[i][_partialHistoryIndex] = newPartialHistory;
-        // maintain moving average
-        _partialHistoryAverage[i] += newPartialHistory;
-        _partialHistoryAverage[i] -= previousOldestPartialHistory;
+        float averagedPartialHistory = 0;
 
-        float averaged = _partialHistoryAverage[i]/((float) kPartialHistoryLength);
+        // shift partials history into past while adding to average
+        for (int j = kPartialHistoryLength - 1; j > 0; j--) {
+            _partialsHistory[i][j] = _partialsHistory[i][j-1];
+            averagedPartialHistory += _partialsHistory[i][j-1];
+        }
+        // add latest sample to front
+        _partialsHistory[i][0] = _freqDataLog[_partialBinEstimatesNearest[i]];
 
-        _derivativeScaled = newPartialHistory - averaged;
+        // compute average and offset new sample
+        float averaged = averagedPartialHistory/((float) kPartialHistoryLength);
+        _derivativeScaled = _freqDataLog[_partialBinEstimatesNearest[i]] - averaged;
         
         // -- for debugging purposes --        
         // shift derivative history into past
@@ -291,8 +292,6 @@
         // add latest sample to front
         _diffHistory[i][0] = _derivativeScaled;
         
-        // find average of partials history
-
 
 
 
@@ -321,10 +320,6 @@
             }
         }
     }
-    
-    // increment partial history index
-    _partialHistoryIndex++;
-    _partialHistoryIndex = _partialHistoryIndex % kPartialHistoryLength;
     
     
     // add beat states to results object
