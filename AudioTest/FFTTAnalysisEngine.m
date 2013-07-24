@@ -255,9 +255,9 @@
         vDSP_zvabs (&(_unwrappedDataPaddedFreq),1,_unwrappedFreqAbs,1,kUnwrappedPadLength);
 
         // copy to test array
-        memcpy(_testArrayReal,_unwrappedDataPaddedFreq.realp,kUnwrappedPadLength);
-        memcpy(_testArrayImag,_unwrappedDataPaddedFreq.imagp,kUnwrappedPadLength);
-        memcpy(_testArrayAbs,_unwrappedFreqAbs,kUnwrappedPadLength);
+        memcpy(_testArrayReal,_unwrappedDataPaddedFreq.realp,kUnwrappedPadLength * sizeof(float));
+        memcpy(_testArrayImag,_unwrappedDataPaddedFreq.imagp,kUnwrappedPadLength * sizeof(float));
+        memcpy(_testArrayAbs,_unwrappedFreqAbs,kUnwrappedPadLength * sizeof(float));
         int blarg = 0;
 
         float maxValue1 = 0;
