@@ -6,10 +6,14 @@
 //  Copyright (c) 2013 James Ormrod. All rights reserved.
 //
 
+// TODO: flag for manual frequency selection replacing lower bounding
+
 #ifndef AudioTest_AnalysisDefines_h
 #define AudioTest_AnalysisDefines_h
 
-#define kBoolUseSamples				FALSE
+#define kBoolUseSamples				TRUE
+
+#define kPartials 					6
 
 #define kManualFrequency            220.0
 //#define kManualFrequency            58.27
@@ -36,8 +40,6 @@
 #define kLog2of16K 					14
 #define kLog2of8K  					13
 
-#define kPartials 					5
-
 #define kFs         				44100
 #define kFsFloat    				44100.0
 
@@ -60,7 +62,10 @@
 
 #define kTestHistoryLength  		100
 
-#define kEdgeDetectUp       		-0.04
-#define kEdgeDetectDown     		-0.08
+//#define kEdgeDetectUp       		-0.04
+//#define kEdgeDetectDown     		-0.08
+
+#define kEdgeDetectUp       		1.0
+#define kEdgeDetectDown     		0.0
 
 #endif
