@@ -54,7 +54,7 @@
 
 #define kMinContiguousFreq			25
 
-#define kPartialHistoryLength		200
+#define kPartialHistoryLength		150
 
 #define kDiffEqnLength 			19
 #define kDiffEqnTerms  {1.0, 16.0, 119.0, 544.0, 1700.0, 3808.0, 6188.0, 7072.0, 4862.0, 0, -4862.0, -7072.0, -6188.0, -3808.0, -1700.0, -544.0, -119.0, -16.0, -1.0}
@@ -63,10 +63,10 @@
 
 #define kTestHistoryLength  		200
 
-#define kEdgeDetectUp       		-0.04
-#define kEdgeDetectDown     		-0.08
+// #define kEdgeDetectUp       		-0.04
+// #define kEdgeDetectDown     		-0.08
 
-//#define kEdgeDetectUp       		1.0
-//#define kEdgeDetectDown     		0.0
+#define kEdgeDetectUp       		1.0
+#define kEdgeDetectDown     		-5.0
 
 #endif

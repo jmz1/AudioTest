@@ -283,16 +283,7 @@
 
         _derivativeScaled = newPartialHistory - averaged;
         
-        // // multiply history by difference equation
-        // memcpy(_differenceEqnInput, &(_partialsHistory[i][0]), kDiffEqnLength * sizeof(float));
-        // vDSP_vmul (_differenceEqnInput, 1, _differenceEqnTerms, 1, _differenceEqnResult, 1, kDiffEqnLength);
-        // // sum difference equation output to get derivative
-        // vDSP_sve(_differenceEqnResult,1,&_differenceEqnSum,kDiffEqnLength);
-        
-        // // divide by scaling factor particular to difference equation
-        // _derivativeScaled = _differenceEqnSum * _derivativeScalingFactor;
-        // //_derivativeScaled = _differenceEqnSum;
-        
+        // -- for debugging purposes --        
         // shift derivative history into past
         for (int j = kTestHistoryLength - 1; j > 0; j--) {
             _diffHistory[i][j] = _diffHistory[i][j-1];
