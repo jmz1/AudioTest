@@ -38,5 +38,6 @@
 
 - (void) updateAnalysisEngineMinDetectFrequency:(float) newMinFrequency;
 
+- (void) setManualFrequencyState:(BOOL)manualFrequencyState;
 
 @end

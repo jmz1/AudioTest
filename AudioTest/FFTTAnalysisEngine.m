@@ -59,6 +59,8 @@
     // bounds for frequency detection
     float           _minimumAcorFrequency;
     float           _maximumAcorFrequency;
+    
+    BOOL            _manualFrequencyState;
 
     // fundamental period estimate history
     int             _periodHistory[kMinContiguousFreq];
@@ -144,6 +146,7 @@
     
     self->_maximumAcorFrequency = kDefaultMaxAcorFrequency;
     self->_minimumAcorFrequency = kDefaultMinAcorFrequency;
+    self->_manualFrequencyState = FALSE;
 
     // initialise indexes
     self->_periodHistoryIndex = 0;
@@ -254,7 +257,10 @@
 
     float frequencyEstimate = kFsFloat/((float) _periodEstimate);
     
-
+    // if using manual frequency, disregard this and use the set one
+    if (_manualFrequencyState == TRUE) {
+        frequencyEstimate = _minimumAcorFrequency;
+    }
 
 
     // calculate frequency bins

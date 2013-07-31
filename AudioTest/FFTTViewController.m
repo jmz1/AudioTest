@@ -52,15 +52,15 @@
     }
 
     // iterate through display labels, animating each one
-    for (int i = 0; i < kPartials; i++) {
-        UILabel *displayLabel = (UILabel*) [self.displayLabels objectAtIndex:i];
-        float impliedPeriod = [[analysisResults.impliedFrequencies objectAtIndex:i] floatValue];
-        int x = 70;
-        int y = MAX((412 - (impliedPeriod * 100)),0);
-        int width = 25;
-        int height = 5;
-        displayLabel.frame = CGRectMake(x, y, width, height);
-    }
+    // for (int i = 0; i < kPartials; i++) {
+    //     UILabel *displayLabel = (UILabel*) [self.displayLabels objectAtIndex:i];
+    //     float impliedPeriod = [[analysisResults.impliedFrequencies objectAtIndex:i] floatValue];
+    //     int x = 70;
+    //     int y = MAX((412 - (impliedPeriod * 100)),0);
+    //     int width = 25;
+    //     int height = 5;
+    //     displayLabel.frame = CGRectMake(x, y, width, height);
+    // }
 
     // display detected frequency
     float detectedFrequency = [analysisResults.detectedFrequency floatValue];
@@ -92,6 +92,11 @@
     if (floatVal != 0.0){
         [self.audioController updateAnalysisEngineMaxDetectFrequency:floatVal];
     }
+}
+
+- (IBAction)toggledManualSwitch:(UISwitch *)sender {
+    BOOL manualFrequencyState = sender.on;
+    [self.audioController setManualFrequencyState:manualFrequencyState];
 }
 
 

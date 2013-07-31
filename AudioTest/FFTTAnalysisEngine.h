@@ -17,6 +17,7 @@
 
 @property (assign) float minimumAcorFrequency;
 @property (assign) float maximumAcorFrequency;
+@property (assign) BOOL manualFrequencyState;
 
 @property (nonatomic, retain) FFTTAudioReceiver *audioReceiver;
 @property (nonatomic, retain) FFTTAnalysisResults *analysisResults;
