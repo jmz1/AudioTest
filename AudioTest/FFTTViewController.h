@@ -39,4 +39,6 @@
 
 - (IBAction)editedMaxFrequency:(UITextField *)sender;
 
+- (IBAction)toggledManualSwitch:(UISwitch *)sender;
+
 @end

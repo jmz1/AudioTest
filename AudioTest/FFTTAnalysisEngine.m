@@ -59,6 +59,8 @@
     // bounds for frequency detection
     float           _minimumAcorFrequency;
     float           _maximumAcorFrequency;
+    
+    BOOL            _manualFrequencyState;
 
     // fundamental period estimate history
     int             _periodHistory[kMinContiguousFreq];
@@ -73,7 +75,9 @@
     int             _partialBinEstimatesNearest[kPartials];
     
     // partials history
-    float           _partialsHistory[kPartials][kDiffEqnLength];
+    float           _partialsHistory[kPartials][kPartialHistoryLength];
+    int             _partialHistoryIndex;
+    float           _partialHistoryAverage[kPartials];
     
     // beat period calculation arrays
     int             _beatPeriodCounters[kPartials];
@@ -142,10 +146,12 @@
     
     self->_maximumAcorFrequency = kDefaultMaxAcorFrequency;
     self->_minimumAcorFrequency = kDefaultMinAcorFrequency;
+    self->_manualFrequencyState = FALSE;
 
     // initialise indexes
     self->_periodHistoryIndex = 0;
     self->_periodEstimate = 1;
+    self->_partialHistoryIndex = 0;
 
     // do FFT initialisations
     _FFTSetup = vDSP_create_fftsetup( kLog2of16K, kFFTRadix2 );
@@ -201,7 +207,7 @@
     vDSP_zvmags(&(_unwindowedDataFreq),1,_powerSpectralDensity.realp,1,kRingBufferLength);
     // zero DC component of PSD
     _powerSpectralDensity.realp[0] = 0.0;
-    // perform IFFT to generator autocorrelation
+    // perform IFFT to generate autocorrelation
     vDSP_fft_zop(_FFTSetup,&(_powerSpectralDensity),1,&(_autoCorrelation),1,kLog2of8K,kFFTDirection_Inverse);
     // copy to test array
     memcpy( &(_testAcor), _autoCorrelation.realp,kRingBufferLengthBytes);
@@ -251,7 +257,10 @@
 
     float frequencyEstimate = kFsFloat/((float) _periodEstimate);
     
-
+    // if using manual frequency, disregard this and use the set one
+    if (_manualFrequencyState == TRUE) {
+        frequencyEstimate = _minimumAcorFrequency;
+    }
 
 
     // calculate frequency bins
@@ -266,23 +275,22 @@
     
     // find beats
     for (int i = 0; i < kPartials; i++) {
-        // shift history bins into past
-        for (int j = kDiffEqnLength - 1; j > 0; j--) {
+
+        float averagedPartialHistory = 0;
+
+        // shift partials history into past while adding to average
+        for (int j = kPartialHistoryLength - 1; j > 0; j--) {
             _partialsHistory[i][j] = _partialsHistory[i][j-1];
+            averagedPartialHistory += _partialsHistory[i][j-1];
         }
-        // add data to start of bin history
+        // add latest sample to front
         _partialsHistory[i][0] = _freqDataLog[_partialBinEstimatesNearest[i]];
+
+        // compute average and offset new sample
+        float averaged = averagedPartialHistory/((float) kPartialHistoryLength);
+        _derivativeScaled = _freqDataLog[_partialBinEstimatesNearest[i]] - averaged;
         
-        // multiply history by difference equation
-        memcpy(_differenceEqnInput, &(_partialsHistory[i][0]), kDiffEqnLength * sizeof(float));
-        vDSP_vmul (_differenceEqnInput, 1, _differenceEqnTerms, 1, _differenceEqnResult, 1, kDiffEqnLength);
-        // sum difference equation output to get derivative
-        vDSP_sve(_differenceEqnResult,1,&_differenceEqnSum,kDiffEqnLength);
-        
-        // divide by scaling factor particular to difference equation
-        _derivativeScaled = _differenceEqnSum * _derivativeScalingFactor;
-        //_derivativeScaled = _differenceEqnSum;
-        
+        // -- for debugging purposes --        
         // shift derivative history into past
         for (int j = kTestHistoryLength - 1; j > 0; j--) {
             _diffHistory[i][j] = _diffHistory[i][j-1];
@@ -290,6 +298,12 @@
         // add latest sample to front
         _diffHistory[i][0] = _derivativeScaled;
         
+
+
+
+
+
+
         // increment period counter
         _beatPeriodCounters[i]++;
         
@@ -312,7 +326,6 @@
             }
         }
     }
-    
     
     
     // add beat states to results object
