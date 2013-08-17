@@ -207,7 +207,7 @@
     vDSP_zvmags(&(_unwindowedDataFreq),1,_powerSpectralDensity.realp,1,kRingBufferLength);
     // zero DC component of PSD
     _powerSpectralDensity.realp[0] = 0.0;
-    // perform IFFT to generator autocorrelation
+    // perform IFFT to generate autocorrelation
     vDSP_fft_zop(_FFTSetup,&(_powerSpectralDensity),1,&(_autoCorrelation),1,kLog2of8K,kFFTDirection_Inverse);
     // copy to test array
     memcpy( &(_testAcor), _autoCorrelation.realp,kRingBufferLengthBytes);

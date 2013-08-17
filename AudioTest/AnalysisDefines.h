@@ -11,7 +11,7 @@
 #ifndef AudioTest_AnalysisDefines_h
 #define AudioTest_AnalysisDefines_h
 
-#define kBoolUseSamples				TRUE
+#define kBoolUseSamples				FALSE
 
 #define kPartials 					6
 
@@ -66,7 +66,7 @@
 // #define kEdgeDetectUp       		-0.04
 // #define kEdgeDetectDown     		-0.08
 
-#define kEdgeDetectUp       		+1.0
-#define kEdgeDetectDown     		-3.0
+#define kEdgeDetectUp       		+0.5
+#define kEdgeDetectDown     		+0.1
 
 #endif
