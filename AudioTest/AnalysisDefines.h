@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 James Ormrod. All rights reserved.
 //
 
-// TODO: flag for manual frequency selection replacing lower bounding
+// TODO: toggling of frequency detection
 
 #ifndef AudioTest_AnalysisDefines_h
 #define AudioTest_AnalysisDefines_h
