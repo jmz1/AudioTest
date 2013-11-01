@@ -13,7 +13,7 @@
 
 @interface FFTTAppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) UIWindow *window; 
 
 @property (strong, nonatomic) FFTTViewController *viewController;
 @property (strong, nonatomic) FFTTAudioController *audioController;
