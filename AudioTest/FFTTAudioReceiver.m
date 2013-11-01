@@ -17,7 +17,6 @@
     float       *_newSamplesBuffer;
     int         _newSamplesHead;
     int         _testCount;
-    //dispatch_queue_t _analysisQueue;
     FFTTAudioController *_parentAudioController;
 }
 
@@ -35,7 +34,6 @@
     self->_newSamplesBuffer = (float*)calloc(kSamplesPerAudioCallback, sizeof(float));
     self->_ringBufferHead = 0;
     
-    //self->_analysisQueue = dispatch_queue_create("Analysis Queue",NULL);
     self->_parentAudioController = parentAudioController;
     
     return self;
@@ -80,7 +78,6 @@ static void receiverCallbackFunction(id                        receiver,
     // wrap around buffer head position
     int buffer_head = _ringBufferHead + kSamplesPerAnalysisWindow;
     if ( buffer_head == kRingBufferLength ) buffer_head = 0;
-//    OSMemoryBarrier();
     _ringBufferHead = buffer_head;
 
 }

@@ -249,7 +249,8 @@
     {
         // only update if change is greater than 2 periods
         if ((acorMaxIndex != (_periodEstimate+2)) && (acorMaxIndex != (_periodEstimate+1)) 
-            && (acorMaxIndex != (_periodEstimate-1)) && (acorMaxIndex != (_periodEstimate-2)) && (acorMaxIndex != minimumAcorPeriod))
+            && (acorMaxIndex != (_periodEstimate-1)) && (acorMaxIndex != (_periodEstimate-2)) 
+            && (acorMaxIndex != minimumAcorPeriod))
         {
             _periodEstimate = acorMaxIndex;
         }
@@ -257,7 +258,7 @@
 
     float frequencyEstimate = kFsFloat/((float) _periodEstimate);
     
-    // if using manual frequency, disregard this and use the set one
+    // if using manual frequency, disregard calculated value and use the set one
     if (_manualFrequencyState == TRUE) {
         frequencyEstimate = _minimumAcorFrequency;
     }
@@ -330,16 +331,20 @@
     
     // add beat states to results object
     for (int i = 0; i < kPartials; i++) {
-        [self.analysisResults.beatStates replaceObjectAtIndex:(i) withObject:[NSNumber numberWithBool:(_beatState[i])]];
-        [self.analysisResults.impliedFrequencies replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_impliedFrequencies[i])]];
-        [self.analysisResults.absoluteFrequencies replaceObjectAtIndex:(i) withObject:[NSNumber numberWithFloat:(_absoluteFrequencies[i])]];
+        [self.analysisResults.beatStates replaceObjectAtIndex:(i) 
+            withObject:[NSNumber numberWithBool:(_beatState[i])]];
+        [self.analysisResults.impliedFrequencies replaceObjectAtIndex:(i) 
+            withObject:[NSNumber numberWithFloat:(_impliedFrequencies[i])]];
+        [self.analysisResults.absoluteFrequencies replaceObjectAtIndex:(i) 
+            withObject:[NSNumber numberWithFloat:(_absoluteFrequencies[i])]];
     }
 
     self.analysisResults.detectedFrequency = [NSNumber numberWithFloat:((float)frequencyEstimate)];
 
     
     // test to output period
-    //[self.analysisResults.absoluteFrequencies replaceObjectAtIndex:(0) withObject:[NSNumber numberWithFloat:((float)_periodEstimate)]];
+    // [self.analysisResults.absoluteFrequencies replaceObjectAtIndex:(0) 
+    //    withObject:[NSNumber numberWithFloat:((float)_periodEstimate)]];
 }
 
 
